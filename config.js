@@ -9,7 +9,7 @@ if (!process.env.SUPABASE_URL) {
 }
 
 const pool = new Pool({
-    connectionString: process.env.SUPABASE_URL,
+    connectionString: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false
     },
@@ -20,9 +20,10 @@ const pool = new Pool({
 
 module.exports = {
     query: async (text, params) => {
-        console.log('Executing query:', text);
+        console.log('Executing query:', text, params);
         try {
-            const result = await pool.query(text, params);
+            const result = await pool.query({ text, values: params || [] });
+            console.log('Query result:', result.rows);
             return result;
         } catch (error) {
             console.error('Database error:', {

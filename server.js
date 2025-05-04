@@ -10,7 +10,6 @@ console.log('Starting server on port:', port);
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Log every request for debugging
 app.use((req, res, next) => {
@@ -21,7 +20,6 @@ app.use((req, res, next) => {
 // Database initialization
 async function initializeDatabase() {
     console.log('Initializing database...');
-    
     try {
         await query(`
             CREATE TABLE IF NOT EXISTS users (
@@ -41,79 +39,41 @@ async function initializeDatabase() {
     }
 }
 
-// Routes
-app.get('/api/data', async (req, res) => {
-    console.log('Received GET request for /api/data');
-    try {
-        const result = await query('SELECT * FROM users ORDER BY created_at DESC LIMIT 10');
-        res.json(result.rows);
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        res.status(500).json({ error: 'Failed to fetch data', details: error.message, stack: error.stack });
-    }
-});
-
-// Add a new user
-app.post('/api/users', async (req, res) => {
-    try {
-        const { name, email } = req.body;
-        const result = await query(
-            'INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *',
-            [name, email]
-        );
-        res.status(201).json(result.rows[0]);
-    } catch (error) {
-        console.error('Error creating user:', error);
-        res.status(500).json({ error: 'Failed to create user', details: error.message, stack: error.stack });
-    }
-});
-
-// Book pages
-app.get('/books/:book', async (req, res) => {
-    const { book } = req.params;
-    try {
-        // Fetch book data from database
-        const bookResult = await query('SELECT * FROM bible.books WHERE short = $1', [book]);
-        if (bookResult.rows.length === 0) {
-            return res.status(404).send('Book not found');
-        }
-        
-        // Fetch chapters for the book
-        const chaptersResult = await query(
-            'SELECT * FROM bible.chapters WHERE book_id = $1 ORDER BY chapter_number',
-            [bookResult.rows[0].id]
-        );
-
-        // Render book page
-        res.sendFile(path.join(__dirname, 'public', 'book.html'));
-    } catch (error) {
-        console.error('Error fetching book data:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-// API routes
+// API endpoint for book data
 app.get('/api/books/:book', async (req, res) => {
     const { book } = req.params;
     try {
+        console.log('Received request for book:', book);
+        // Fetch book data from database
         const bookResult = await query('SELECT * FROM bible.books WHERE short = $1', [book]);
+        console.log('Book query result:', bookResult.rows);
         if (bookResult.rows.length === 0) {
+            console.log('Book not found:', book);
             return res.status(404).json({ error: 'Book not found' });
         }
-        
+        // Fetch chapters for the book
         const chaptersResult = await query(
-            'SELECT * FROM bible.chapters WHERE book_id = $1 ORDER BY chapter_number',
+            'SELECT * FROM bible.chapters WHERE book_id = $1 ORDER BY number',
             [bookResult.rows[0].id]
         );
-
-        res.json({
-            book: bookResult.rows[0],
-            chapters: chaptersResult.rows
-        });
+        console.log('Chapters query result:', chaptersResult.rows);
+        res.json({ book: bookResult.rows[0], chapters: chaptersResult.rows });
+        console.log('Sent JSON response for book:', book);
     } catch (error) {
         console.error('Error fetching book data:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        // Log error details to terminal for debugging
+        console.log('DEBUG ERROR DETAILS:', error.message, error.stack);
+        // Send detailed error for debugging
+        res.status(500).json({ error: 'Internal server error', details: error.message, stack: error.stack });
     }
+});
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Book pages
+app.get('/books/:book', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'book.html'));
 });
 
 // Homepage
@@ -121,9 +81,17 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Serve index.html for all other routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// Optional: catch-all for unknown routes
+app.use((req, res) => {
+    res.status(404).send('404 Not Found');
+});
+
+// Global error handlers for uncaught exceptions and unhandled promise rejections
+process.on('uncaughtException', (err) => {
+    console.error('UNCAUGHT EXCEPTION:', err);
+});
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('UNHANDLED REJECTION:', reason);
 });
 
 // Initialize database and start server
