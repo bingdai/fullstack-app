@@ -43,16 +43,14 @@ app.get('/api/data', async (req, res) => {
         res.json(result.rows);
     } catch (error) {
         console.error('Error fetching data:', error);
-        res.status(500).json({ error: 'Failed to fetch data' });
+        res.status(500).json({ error: 'Failed to fetch data', details: error.message, stack: error.stack });
     }
 });
 
 // Add a new user
 app.post('/api/users', async (req, res) => {
-    console.log('Received POST request for /api/users with body:', req.body);
-    const { name, email } = req.body;
-    
     try {
+        const { name, email } = req.body;
         const result = await query(
             'INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *',
             [name, email]
@@ -60,7 +58,7 @@ app.post('/api/users', async (req, res) => {
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error('Error creating user:', error);
-        res.status(500).json({ error: 'Failed to create user' });
+        res.status(500).json({ error: 'Failed to create user', details: error.message, stack: error.stack });
     }
 });
 
