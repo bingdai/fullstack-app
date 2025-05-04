@@ -73,13 +73,16 @@ app.get('*', (req, res) => {
 initializeDatabase()
     .then(() => {
         console.log('Database initialized successfully');
-        // Remove or comment out the app.listen block for Vercel compatibility
-        // app.listen(port, () => {
-        //     console.log(`Server is now running on http://localhost:${port}`);
-        // });
+        // Start server locally if not in Vercel
+        if (process.env.VERCEL !== '1') {
+            const port = 3002;
+            app.listen(port, () => {
+                console.log(`Server is now running on http://localhost:${port}`);
+            });
+        }
     }).catch(error => {
         console.error('Failed to start server:', error);
-});
+    });
 
 // Export the Express app for Vercel serverless
 module.exports = app;
