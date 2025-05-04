@@ -1,23 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Static File Test</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-      line-height: 1.6;
-    }
-    h1 { color: blue; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Stack App Test</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Static File Test</h1>
-  <p>If you can see this page with blue heading, static files are working!</p>
-  <p>Current time: <span id="time"></span></p>
-  
-  <script>
-    document.getElementById('time').textContent = new Date().toISOString();
-  </script>
+    <div class="container">
+        <h1>Full Stack App Test Page</h1>
+        <div class="content">
+            <form id="createUserForm">
+                <div>
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <button type="submit">Create User</button>
+            </form>
+            <button id="fetchDataBtn">Fetch Users</button>
+            <div id="dataDisplay"></div>
+        </div>
+    </div>
+    <script src="app.js"></script>
 </body>
-</html>
+</html>       
