@@ -8,10 +8,17 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchUsers() {
         try {
             const response = await fetch('/api/data');
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('API Error:', errorText);
+                dataDisplay.textContent = 'API Error: ' + errorText;
+                return;
+            }
             const users = await response.json();
             displayUsers(users);
         } catch (error) {
             dataDisplay.textContent = 'Error fetching users: ' + error.message;
+            console.error('Fetch Error:', error);
         }
     }
 
@@ -26,11 +33,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ name, email }),
             });
             if (!response.ok) {
-                throw new Error('Failed to create user');
+                const errorText = await response.text();
+                console.error('API Error:', errorText);
+                dataDisplay.textContent = 'API Error: ' + errorText;
+                return;
             }
             fetchUsers(); // Refresh the list after creating a new user
         } catch (error) {
             dataDisplay.textContent = 'Error creating user: ' + error.message;
+            console.error('Fetch Error:', error);
         }
     }
 
