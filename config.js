@@ -9,17 +9,6 @@ const pool = new Pool({
     }
 });
 
-// Fallback to direct database connection if needed
-if (!process.env.SUPABASE_URL) {
-    console.log('Using direct database connection');
-    pool = new Pool({
-        connectionString: process.env.DATABASE_URL,
-        ssl: {
-            rejectUnauthorized: false
-        }
-    });
-}
-
 module.exports = {
     query: (text, params) => {
         console.log('Executing query:', text);
