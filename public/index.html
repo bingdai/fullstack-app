@@ -10,8 +10,19 @@
     <div class="container">
         <h1>Welcome to Full Stack App</h1>
         <div class="content">
-            <button id="fetchDataBtn">Fetch Data</button>
-            <div id="dataDisplay"></div>
+            <form id="createUserForm">
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <button type="submit">Create User</button>
+        </form>
+        <button id="fetchDataBtn">Fetch Users</button>
+        <div id="dataDisplay"></div>
         </div>
     </div>
     <script src="app.js"></script>
