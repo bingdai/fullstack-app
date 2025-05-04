@@ -68,6 +68,59 @@ app.post('/api/users', async (req, res) => {
     }
 });
 
+// Book pages
+app.get('/books/:book', async (req, res) => {
+    const { book } = req.params;
+    try {
+        // Fetch book data from database
+        const bookResult = await query('SELECT * FROM bible.books WHERE short = $1', [book]);
+        if (bookResult.rows.length === 0) {
+            return res.status(404).send('Book not found');
+        }
+        
+        // Fetch chapters for the book
+        const chaptersResult = await query(
+            'SELECT * FROM bible.chapters WHERE book_id = $1 ORDER BY chapter_number',
+            [bookResult.rows[0].id]
+        );
+
+        // Render book page
+        res.sendFile(path.join(__dirname, 'public', 'book.html'));
+    } catch (error) {
+        console.error('Error fetching book data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// API routes
+app.get('/api/books/:book', async (req, res) => {
+    const { book } = req.params;
+    try {
+        const bookResult = await query('SELECT * FROM bible.books WHERE short = $1', [book]);
+        if (bookResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Book not found' });
+        }
+        
+        const chaptersResult = await query(
+            'SELECT * FROM bible.chapters WHERE book_id = $1 ORDER BY chapter_number',
+            [bookResult.rows[0].id]
+        );
+
+        res.json({
+            book: bookResult.rows[0],
+            chapters: chaptersResult.rows
+        });
+    } catch (error) {
+        console.error('Error fetching book data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Homepage
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Serve index.html for all other routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));

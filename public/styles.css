@@ -53,7 +53,7 @@ h1 {
     box-shadow: 0 1px 2px rgba(0,0,0,0.03);
 }
 
-/* Book Type Colors */
+/* Color classes for book types */
 .pentateuch { background: #faf9e0; }
 .history { background: #eaf3fa; }
 .poetry { background: #faeaea; }
@@ -65,9 +65,64 @@ h1 {
 .general-letters { background: #eafae7; }
 .revelation { background: #faeaea; }
 
+/* Book page styles */
+.back-button {
+  display: inline-block;
+  padding: 8px 16px;
+  background: #22334a;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  margin-bottom: 24px;
+  transition: background 0.2s;
+}
+.back-button:hover {
+  background: #334a66;
+}
+
+.book-info {
+  margin-bottom: 32px;
+  padding: 24px;
+  background: #f8f8e9;
+  border-radius: 8px;
+}
+
+.chapters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.chapter-tile {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.chapter-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.chapter-tile h3 {
+  margin: 0 0 8px 0;
+  color: #22334a;
+}
+
+.chapter-tile p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
 /* Responsive Design */
 @media (max-width: 600px) {
     .container { padding: 12px; }
     .books-grid { gap: 6px 6px; }
     .book-tile { min-width: 56px; font-size: 0.95rem; }
+    .chapters-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
 }

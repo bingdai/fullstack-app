@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bible Book - <%= book.name %></title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><%= book.name %></h1>
+      <nav>
+        <a href="/" class="back-button">← Back to Books</a>
+      </nav>
+    </header>
+
+    <main>
+      <div class="book-info">
+        <p><%= book.description %></p>
+        <p>Number of Chapters: <%= book.chapter_count %></p>
+      </div>
+
+      <div class="chapters-grid">
+        <% chapters.forEach(chapter => { %>
+          <a href="/books/<%= book.short %>/<%= chapter.chapter_number %>">
+            <div class="chapter-tile">
+              <h3>Chapter <%= chapter.chapter_number %></h3>
+              <p><%= chapter.verse_count %> verses</p>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

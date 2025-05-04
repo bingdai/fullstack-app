@@ -28,11 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const tile = document.createElement('div');
                 tile.className = `book-tile ${type.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
                 tile.textContent = book;
+                
+                // Make the tile clickable and navigate to the book page
                 tile.addEventListener('click', () => {
-                    // Add click handler for book selection
-                    console.log(`Selected: ${book}`);
-                    // TODO: Add navigation to book view
+                    window.location.href = `/books/${book}`;
                 });
+                
                 grid.appendChild(tile);
             });
         });
