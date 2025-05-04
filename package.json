@@ -10,13 +10,19 @@
     "prod": "node server.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
     "cors": "^2.8.5",
+    "express": "^4.18.2",
     "pg": "^8.11.3",
-    "dotenv": "^16.3.1",
     "pg-hstore": "^2.3.4"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.15.3",
+    "@types/pg": "^8.11.14",
+    "dotenv": "^16.5.0",
+    "nodemon": "^3.0.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3"
   }
 }
