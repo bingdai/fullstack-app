@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bible Book</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 id="book-title">Loading...</h1>
+      <nav>
+        <a href="/" class="back-button">← Back to Books</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Book Information -->
+      <section class="book-info">
+        <div class="book-stats">
+          <p id="book-description">Loading...</p>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-label">Chapters</span>
+              <span class="stat-value" id="chapter-count">Loading...</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Type</span>
+              <span class="stat-value" id="book-type">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chapter Navigation -->
+      <section class="chapter-navigation">
+        <div class="chapter-groups" id="chapter-groups">
+          <!-- Chapters will be populated by JavaScript -->
+        </div>
+      </section>
+
+      <!-- Chapter Content Area -->
+      <section class="chapter-content" id="chapter-content">
+        <!-- Chapters will be loaded here -->
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

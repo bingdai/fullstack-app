@@ -80,49 +80,134 @@ h1 {
   background: #334a66;
 }
 
+/* Book Information */
 .book-info {
-  margin-bottom: 32px;
+  margin-bottom: 48px;
   padding: 24px;
   background: #f8f8e9;
-  border-radius: 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.chapters-grid {
+.book-stats {
+  margin-top: 24px;
+}
+
+.stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 16px;
+  margin-top: 16px;
 }
 
-.chapter-tile {
+.stat-item {
   background: white;
   padding: 16px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
+  text-align: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
 
-.chapter-tile:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+.stat-label {
+  color: #666;
+  font-size: 0.875rem;
+  margin-bottom: 8px;
+  display: block;
 }
 
-.chapter-tile h3 {
-  margin: 0 0 8px 0;
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: 600;
   color: #22334a;
 }
 
-.chapter-tile p {
+/* Chapter Navigation */
+.chapter-navigation {
+  margin-bottom: 48px;
+}
+
+.chapter-groups {
+  display: grid;
+  gap: 32px;
+}
+
+.chapter-group {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.chapter-group h2 {
+  color: #22334a;
+  margin-bottom: 16px;
+  font-size: 1.25rem;
+}
+
+.chapters-list {
+  list-style: none;
+  padding: 0;
   margin: 0;
+}
+
+.chapters-list li {
+  margin-bottom: 8px;
+}
+
+.chapters-list a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f8f8e9;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #22334a;
+  transition: background 0.2s;
+}
+
+.chapters-list a:hover {
+  background: #e8e8d9;
+}
+
+.chapter-number {
+  font-weight: 600;
+}
+
+.chapter-verse-count {
   color: #666;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
+}
+
+/* Chapter Content */
+.chapter-content {
+  background: #f8f8e9;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 /* Responsive Design */
 @media (max-width: 600px) {
-    .container { padding: 12px; }
-    .books-grid { gap: 6px 6px; }
-    .book-tile { min-width: 56px; font-size: 0.95rem; }
-    .chapters-grid {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    }
+  .container { padding: 12px; }
+  .books-grid { gap: 6px 6px; }
+  .book-tile { min-width: 56px; font-size: 0.95rem; }
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .chapter-groups {
+    gap: 24px;
+  }
+  .chapter-group {
+    padding: 16px;
+  }
+  .chapter-group h2 {
+    font-size: 1.125rem;
+  }
+  .chapters-list li {
+    margin-bottom: 6px;
+  }
+  .chapters-list a {
+    padding: 8px 12px;
+  }
 }
