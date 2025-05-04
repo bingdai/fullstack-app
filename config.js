@@ -15,8 +15,7 @@ const pool = new Pool({
     },
     connectionTimeoutMillis: 10000, // 10 second timeout
     idleTimeoutMillis: 60000, // 60 second idle timeout
-    max: 20, // Maximum number of clients in the pool
-    min: 2 // Minimum number of clients in the pool
+    max: 2, // Maximum number of clients in the pool
 });
 
 module.exports = {
