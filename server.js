@@ -4,13 +4,13 @@ const path = require('path');
 const { query } = require('./config');
 
 const app = express();
-const port = 3002; // Changed to avoid port conflict
+const port = process.env.PORT || 3002;
 console.log('Starting server on port:', port);
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Log every request for debugging
 app.use((req, res, next) => {
@@ -79,7 +79,6 @@ initializeDatabase()
         console.log('Database initialized successfully');
         // Start server locally if not in Vercel
         if (process.env.VERCEL !== '1') {
-            const port = 3002;
             app.listen(port, () => {
                 console.log(`Server is now running on http://localhost:${port}`);
             });
