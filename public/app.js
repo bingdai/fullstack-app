@@ -1,92 +1,57 @@
-//comment
+// Bible Book Grid
 document.addEventListener('DOMContentLoaded', () => {
-    const fetchDataBtn = document.getElementById('fetchDataBtn');
-    const createUserForm = document.getElementById('createUserForm');
-    const dataDisplay = document.getElementById('dataDisplay');
-
-    // Fetch users
-    async function fetchUsers() {
-        try {
-            const response = await fetch('/api/data');
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('API Error:', errorText);
-                dataDisplay.textContent = 'API Error: ' + errorText;
-                return;
-            }
-            const users = await response.json();
-            displayUsers(users);
-        } catch (error) {
-            dataDisplay.textContent = 'Error fetching users: ' + error.message;
-            console.error('Fetch Error:', error);
+    // Book data structure
+    const books = {
+        oldTestament: {
+            pentateuch: ['Gen', 'Exod', 'Lev', 'Num', 'Deut'],
+            history: ['Josh', 'Judg', 'Ruth', '1Sam', '2Sam', '1Kgs', '2Kgs', '1Chr', '2Chr', 'Ezra', 'Neh', 'Esth'],
+            poetry: ['Job', 'Ps', 'Prov', 'Eccl', 'Song'],
+            majorProphets: ['Isa', 'Jer', 'Lam', 'Ezek', 'Dan'],
+            minorProphets: ['Hos', 'Joel', 'Amos', 'Obad', 'Jonah', 'Mic', 'Nah', 'Hab', 'Zeph', 'Hag', 'Zech', 'Mal']
+        },
+        newTestament: {
+            gospels: ['Matt', 'Mark', 'Luke', 'John'],
+            acts: ['Acts'],
+            paulLetters: ['Rom', '1Cor', '2Cor', 'Gal', 'Eph', 'Phil', 'Col', '1Thess', '2Thess', '1Tim', '2Tim', 'Titus', 'Philem'],
+            generalLetters: ['Heb', 'Jas', '1Pet', '2Pet', '1John', '2John', '3John', 'Jude'],
+            revelation: ['Rev']
         }
-    }
+    };
 
-    // Create user
-    async function createUser(name, email) {
-        try {
-            const response = await fetch('/api/users', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name, email }),
+    // Create book grid
+    function createBookGrid(testament, books) {
+        const grid = document.createElement('div');
+        grid.className = 'books-grid';
+
+        Object.entries(books).forEach(([type, bookList]) => {
+            bookList.forEach(book => {
+                const tile = document.createElement('div');
+                tile.className = `book-tile ${type.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+                tile.textContent = book;
+                tile.addEventListener('click', () => {
+                    // Add click handler for book selection
+                    console.log(`Selected: ${book}`);
+                    // TODO: Add navigation to book view
+                });
+                grid.appendChild(tile);
             });
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('API Error:', errorText);
-                dataDisplay.textContent = 'API Error: ' + errorText;
-                return;
-            }
-            fetchUsers(); // Refresh the list after creating a new user
-        } catch (error) {
-            dataDisplay.textContent = 'Error creating user: ' + error.message;
-            console.error('Fetch Error:', error);
-        }
-    }
-
-    // Display users in a table
-    function displayUsers(users) {
-        const table = document.createElement('table');
-        const thead = document.createElement('thead');
-        const tbody = document.createElement('tbody');
-
-        // Create table headers
-        const headers = ['ID', 'Name', 'Email', 'Created At'];
-        const headerRow = document.createElement('tr');
-        headers.forEach(headerText => {
-            const th = document.createElement('th');
-            th.textContent = headerText;
-            headerRow.appendChild(th);
-        });
-        thead.appendChild(headerRow);
-
-        // Create table rows
-        users.forEach(user => {
-            const row = document.createElement('tr');
-            Object.values(user).forEach(value => {
-                const td = document.createElement('td');
-                td.textContent = value;
-                row.appendChild(td);
-            });
-            tbody.appendChild(row);
         });
 
-        table.appendChild(thead);
-        table.appendChild(tbody);
-        dataDisplay.innerHTML = '';
-        dataDisplay.appendChild(table);
+        return grid;
     }
 
-    // Event listeners
-    fetchDataBtn.addEventListener('click', fetchUsers);
+    // Initialize book grids
+    const container = document.querySelector('.container');
+    
+    // Old Testament
+    const oldTestamentHeader = document.createElement('h1');
+    oldTestamentHeader.textContent = 'Old Testament';
+    container.appendChild(oldTestamentHeader);
+    container.appendChild(createBookGrid('oldTestament', books.oldTestament));
 
-    if (createUserForm) {
-        createUserForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            createUser(name, email);
-        });
-    }
+    // New Testament
+    const newTestamentHeader = document.createElement('h1');
+    newTestamentHeader.textContent = 'New Testament';
+    container.appendChild(newTestamentHeader);
+    container.appendChild(createBookGrid('newTestament', books.newTestament));
 });
