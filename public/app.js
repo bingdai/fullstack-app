@@ -18,6 +18,76 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Fetch book data
+    async function fetchBookData(bookShort) {
+        try {
+            const response = await fetch(`/api/books/${bookShort}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch book data');
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching book data:', error);
+            throw error;
+        }
+    }
+
+    // Update book information
+    function updateBookInfo(book) {
+        document.getElementById('book-title').textContent = book.name;
+        document.getElementById('book-description').textContent = book.description || 'No description available';
+        document.getElementById('chapter-count').textContent = book.chapter_count || 0;
+        document.getElementById('book-type').textContent = book.testament || 'Unknown';
+    }
+
+    // Create chapter groups
+    function createChapterGroups(chapters) {
+        const chapterGroups = {
+            'Introduction': [],
+            'Main Content': [],
+            'Conclusion': []
+        };
+
+        chapters.forEach((chapter, index) => {
+            if (index < 3) {
+                chapterGroups['Introduction'].push(chapter);
+            } else if (index >= chapters.length - 2) {
+                chapterGroups['Conclusion'].push(chapter);
+            } else {
+                chapterGroups['Main Content'].push(chapter);
+            }
+        });
+
+        return chapterGroups;
+    }
+
+    // Render chapter groups
+    function renderChapterGroups(chapterGroups, bookShort) {
+        const chapterGroupsDiv = document.getElementById('chapter-groups');
+        chapterGroupsDiv.innerHTML = '';
+
+        Object.entries(chapterGroups).forEach(([group, chapters]) => {
+            if (chapters.length > 0) {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'chapter-group';
+                groupDiv.innerHTML = `
+                    <h2>${group}</h2>
+                    <ul class="chapters-list">
+                        ${chapters.map(chapter => `
+                            <li>
+                                <a href="/books/${bookShort}/${chapter.chapter_number}">
+                                    <span class="chapter-number">Chapter ${chapter.chapter_number}</span>
+                                    <span class="chapter-verse-count">${chapter.verse_count} verses</span>
+                                </a>
+                            </li>
+                        `).join('')}
+                    </ul>
+                `;
+                chapterGroupsDiv.appendChild(groupDiv);
+            }
+        });
+    }
+
     // Create book grid
     function createBookGrid(testament, books) {
         const grid = document.createElement('div');
@@ -29,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tile.className = `book-tile ${type.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
                 tile.textContent = book;
                 
-                // Make the tile clickable and navigate to the book page
+                // Navigate to the book detail page on click
                 tile.addEventListener('click', () => {
                     window.location.href = `/books/${book}`;
                 });

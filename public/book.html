@@ -3,44 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
-  <title>Bible Book - <%= book.name %></title>
-=======
-  <title>Bible Books</title>
->>>>>>> book-navigation
-  <link rel="stylesheet" href="styles.css">
+  <title>Bible Book</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
   <div class="container">
-<<<<<<< HEAD
     <header>
-      <h1><%= book.name %></h1>
+      <h1 id="book-title">Loading...</h1>
       <nav>
         <a href="/" class="back-button">← Back to Books</a>
       </nav>
     </header>
-
     <main>
-      <div class="book-info">
-        <p><%= book.description %></p>
-        <p>Number of Chapters: <%= book.chapter_count %></p>
-      </div>
-
-      <div class="chapters-grid">
-        <% chapters.forEach(chapter => { %>
-          <a href="/books/<%= book.short %>/<%= chapter.chapter_number %>">
-            <div class="chapter-tile">
-              <h3>Chapter <%= chapter.chapter_number %></h3>
-              <p><%= chapter.verse_count %> verses</p>
+      <!-- Book Information -->
+      <section class="book-info">
+        <div class="book-stats">
+          <p id="book-description">Loading...</p>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-label">Chapters</span>
+              <span class="stat-value" id="chapter-count">Loading...</span>
             </div>
-          </a>
-        <% }); %>
-      </div>
+            <div class="stat-item">
+              <span class="stat-label">Testament</span>
+              <span class="stat-value" id="book-type">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Chapter Navigation -->
+      <section class="chapter-navigation">
+        <div class="chapter-groups" id="chapter-groups">
+          <!-- Chapters will be populated by JavaScript -->
+        </div>
+      </section>
+      <!-- Chapter Content Area -->
+      <section class="chapter-content" id="chapter-content">
+        <!-- Chapters will be loaded here -->
+      </section>
     </main>
-=======
-    <!-- Book grids will be populated by JavaScript -->
->>>>>>> book-navigation
   </div>
-  <script src="app.js"></script>
+  <script src="/book.js"></script>
 </body>
 </html>
