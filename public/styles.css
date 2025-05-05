@@ -118,64 +118,34 @@ a:hover {
 }
 
 .book-tile {
-  padding: 18px 0;
-  text-align: center;
-  border-radius: 10px;
-  font-size: 1.1rem;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 18px;
+  padding: 20px 0;
+  font-size: 1.15rem;
   font-weight: 500;
   color: #333;
-  background: #f5f5f5;
-  border: 1px solid #ddd;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-decoration: none;
-  display: block;
-  min-width: 80px;
-  border-left: none;
+  transition: background 0.2s, transform 0.15s;
+  box-shadow: none;
+  text-align: center;
 }
 
 .book-tile:hover {
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  transform: translateY(-1px);
+  background: #ececec;
+  transform: scale(1.04);
 }
+
+.pentateuch      { background: #FFF9C4; }
+.historical      { background: #BBDEFB; }
+.wisdom          { background: #FFE0B2; }
+.major-prophets  { background: #C8E6C9; }
+.minor-prophets  { background: #F8BBD0; }
+.gospels         { background: #E1BEE7; }
+.pauline         { background: #F5F5F5; }
+.general-letters { background: #C8E6C9; }
+.revelation      { background: #BBDEFB; }
 
 /* Color classes for book types */
-.pentateuch { 
-  background: #f7f7d9;
-}
-
-.historical { 
-  background: #e3f0ff;
-}
-
-.wisdom { 
-  background: #ffe9cc;
-}
-
-.major-prophets { 
-  background: #e2fbe2;
-}
-
-.minor-prophets { 
-  background: #ffe2e8;
-}
-
-.gospels { 
-  background: #fff9d6;
-}
-
-.pauline { 
-  background: #ffe2e8;
-}
-
-.general-letters { 
-  background: #e2fbe2;
-}
-
-.revelation { 
-  background: #ddefff;
-}
 
 /* Buttons */
 .button {
