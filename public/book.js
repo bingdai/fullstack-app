@@ -10,13 +10,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Fetch book data from API
     async function fetchBookData(bookShort) {
         try {
+            console.log(`Fetching data for book: ${bookShort}`);
             const response = await fetch(`/api/books/${bookShort}`);
+            const data = await response.json();
+            
             if (!response.ok) {
-                throw new Error('Failed to fetch book data');
+                console.error('API Error:', data);
+                throw new Error(data.details || 'Failed to fetch book data');
             }
-            return await response.json();
+            
+            console.log('Book data received:', data);
+            return data;
         } catch (error) {
-            console.error('Error fetching book data:', error);
+            console.error('Error in fetchBookData:', error);
             throw error;
         }
     }
@@ -51,14 +57,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Main logic
     const bookShort = getBookShortFromUrl();
     if (!bookShort) {
-        document.body.innerHTML = '<div class="error-message">Invalid book URL.</div>';
+        showError('Invalid book URL.');
         return;
     }
+    
     try {
         const data = await fetchBookData(bookShort);
         updateBookInfo(data.book);
         renderChapters(data.chapters, bookShort);
     } catch (error) {
-        document.body.innerHTML = '<div class="error-message">Failed to load book data. Please try again later.</div>';
+        console.error('Error initializing book page:', error);
+        showError(error.message || 'Failed to load book data. Please try again later.');
+    }
+    
+    function showError(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.innerHTML = `
+            <h3>Error Loading Book</h3>
+            <p>${message}</p>
+            <p>URL: ${window.location.href}</p>
+            <p>Please try refreshing the page or go back to the <a href="/">homepage</a>.</p>
+        `;
+        document.body.innerHTML = '';
+        document.body.appendChild(errorDiv);
     }
 });
