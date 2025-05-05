@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         oldTestament: {
             pentateuch: ['Gen', 'Exod', 'Lev', 'Num', 'Deut'],
             history: ['Josh', 'Judg', 'Ruth', '1Sam', '2Sam', '1Kgs', '2Kgs', '1Chr', '2Chr', 'Ezra', 'Neh', 'Esth'],
-            poetry: ['Job', 'Ps', 'Prov', 'Eccl', 'Song'],
+            wisdom: ['Job', 'Ps', 'Prov', 'Eccl', 'Song'],
             majorProphets: ['Isa', 'Jer', 'Lam', 'Ezek', 'Dan'],
             minorProphets: ['Hos', 'Joel', 'Amos', 'Obad', 'Jonah', 'Mic', 'Nah', 'Hab', 'Zeph', 'Hag', 'Zech', 'Mal']
         },

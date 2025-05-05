@@ -103,32 +103,33 @@ a:hover {
 }
 
 /* Book Grid */
-.book-grid {
+.books-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 12px;
-  margin: 20px 0 30px;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 6px;
+  margin: 12px 0 24px;
 }
 
 .book-tile {
-  padding: 12px 8px;
+  padding: 6px 4px;
   text-align: center;
-  border-radius: var(--border-radius);
-  font-size: 0.95rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
   font-weight: 500;
-  color: var(--primary-color);
-  background: var(--background-light);
-  border: 1px solid var(--border-color);
+  color: #333;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.2s ease;
   text-decoration: none;
   display: block;
+  min-width: 50px;
 }
 
 .book-tile:hover {
   background: #fff;
-  box-shadow: var(--box-shadow);
-  transform: translateY(-2px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
 }
 
 /* Color classes for book types */
