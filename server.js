@@ -87,16 +87,36 @@ app.get('/api/books/:book', async (req, res) => {
         console.log('Book query result:', bookResult.rows);
         if (bookResult.rows.length === 0) {
             console.log('Book not found:', book);
-            return res.status(404).json({ error: 'Book not found' });
+            return res.status(404).json({ 
+                error: 'Book not found',
+                details: `No book found with short name: ${book}`
+            });
         }
+        
+        const bookId = bookResult.rows[0].id;
+        console.log('Fetching chapters for book ID:', bookId);
+        
         const chaptersResult = await query(
             'SELECT * FROM bible.chapters WHERE book_id = $1 ORDER BY number',
-            [bookResult.rows[0].id]
+            [bookId]
         );
-        res.json({ book: bookResult.rows[0], chapters: chaptersResult.rows });
+        console.log('Chapters found:', chaptersResult.rows.length);
+        
+        res.json({ 
+            book: bookResult.rows[0], 
+            chapters: chaptersResult.rows 
+        });
     } catch (error) {
-        console.error('Error fetching book data:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        console.error('Error in /api/books/:book:', {
+            error: error.message,
+            stack: error.stack,
+            params: req.params,
+            query: req.query
+        });
+        res.status(500).json({ 
+            error: 'Internal server error',
+            details: error.message
+        });
     }
 });
 
@@ -126,19 +146,37 @@ process.on('unhandledRejection', (reason, promise) => {
     console.error('UNHANDLED REJECTION:', reason);
 });
 
-// Initialize database and start server
-initializeDatabase()
-    .then(() => {
+// Run migrations and start server
+async function startServer() {
+    try {
+        console.log('Running database migrations...');
+        const { exec } = require('child_process');
+        await new Promise((resolve, reject) => {
+            exec('node db/run-migrations.js', (error, stdout, stderr) => {
+                if (error) {
+                    console.error('Migration error:', stderr);
+                    return reject(error);
+                }
+                console.log('Migrations completed:', stdout);
+                resolve();
+            });
+        });
+
         console.log('Database initialized successfully');
+        
         // Start server locally if not in Vercel
         if (process.env.VERCEL !== '1') {
             app.listen(port, () => {
                 console.log(`Server is now running on http://localhost:${port}`);
             });
         }
-    }).catch(error => {
+    } catch (error) {
         console.error('Failed to start server:', error);
-    });
+        process.exit(1);
+    }
+}
+
+startServer();
 
 // Export the Express app for Vercel serverless
 module.exports = app;
