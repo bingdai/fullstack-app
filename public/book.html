@@ -1,48 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bible Book</title>
-  <link rel="stylesheet" href="/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#22334a">
+    <meta name="description" content="Read and study the Bible online with our easy-to-use reader">
+    <title>Bible App - Loading...</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1 id="book-title">Loading...</h1>
-      <nav>
-        <a href="/" class="back-button">← Back to Books</a>
-      </nav>
-    </header>
-    <main>
-      <!-- Book Information -->
-      <section class="book-info">
-        <div class="book-stats">
-          <p id="book-description">Loading...</p>
-          <div class="stats-grid">
-            <div class="stat-item">
-              <span class="stat-label">Chapters</span>
-              <span class="stat-value" id="chapter-count">Loading...</span>
+    <div class="container">
+        <header class="app-header">
+            <a href="/" class="back-button" aria-label="Back to Books">
+                <span aria-hidden="true">←</span> Back to Books
+            </a>
+            
+            <div class="book-header">
+                <h1 id="book-title" class="book-title">Loading book...</h1>
+                <p id="book-description" class="book-description"></p>
             </div>
-            <div class="stat-item">
-              <span class="stat-label">Testament</span>
-              <span class="stat-value" id="book-type">Loading...</span>
-            </div>
-          </div>
-        </div>
-      </section>
-      <!-- Chapter Navigation -->
-      <section class="chapter-navigation">
-        <div class="chapter-groups" id="chapter-groups">
-          <!-- Chapters will be populated by JavaScript -->
-        </div>
-      </section>
-      <!-- Chapter Content Area -->
-      <section class="chapter-content" id="chapter-content">
-        <!-- Chapters will be loaded here -->
-      </section>
-    </main>
-  </div>
-  <script src="/book.js"></script>
+        </header>
+
+        <main class="content-container">
+            <aside class="chapters-nav" aria-label="Chapter navigation">
+                <div class="chapters-header">
+                    <h2>Chapters</h2>
+                    <div id="loading-chapters" class="loading-indicator">Loading chapters...</div>
+                </div>
+                <div id="chapters-list" class="chapters-list" role="list">
+                    <!-- Chapters will be dynamically inserted here -->
+                </div>
+            </aside>
+
+            <article class="chapter-content" id="chapter-content-container">
+                <div id="chapter-content" class="chapter-content-inner">
+                    <div class="loading">Loading chapter content...</div>
+                </div>
+            </article>
+        </main>
+
+        <footer class="app-footer">
+            <p>&copy; 2023 Bible App. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="/book.js" type="module"></script>
 </body>
 </html>
