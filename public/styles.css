@@ -124,6 +124,7 @@ a:hover {
   text-decoration: none;
   display: block;
   min-width: 50px;
+  border-left: none;
 }
 
 .book-tile:hover {
@@ -134,48 +135,39 @@ a:hover {
 
 /* Color classes for book types */
 .pentateuch { 
-  background: #e6f2ff;
-  border-left: 4px solid #4a90e2;
+  background: #f7f7d9;
 }
 
 .historical { 
-  background: #ffe6e6;
-  border-left: 4px solid #e53e3e;
+  background: #e3f0ff;
 }
 
 .wisdom { 
-  background: #fff2cc;
-  border-left: 4px solid #d69e2e;
+  background: #ffe9cc;
 }
 
 .major-prophets { 
-  background: #e6ffe6;
-  border-left: 4px solid #38a169;
+  background: #e2fbe2;
 }
 
 .minor-prophets { 
-  background: #f0e6ff;
-  border-left: 4px solid #9f7aea;
+  background: #ffe2e8;
 }
 
 .gospels { 
-  background: #e6f7ff;
-  border-left: 4px solid #00b5d8;
+  background: #fff9d6;
 }
 
 .pauline { 
-  background: #f9e6ff;
-  border-left: 4px solid #d53f8c;
+  background: #ffe2e8;
 }
 
 .general-letters { 
-  background: #eafae7;
-  border-left: 4px solid #38a169;
+  background: #e2fbe2;
 }
 
 .revelation { 
-  background: #faeaea;
-  border-left: 4px solid #e53e3e;
+  background: #ddefff;
 }
 
 /* Buttons */
