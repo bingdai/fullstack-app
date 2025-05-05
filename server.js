@@ -149,20 +149,37 @@ process.on('unhandledRejection', (reason, promise) => {
 // Run migrations and start server
 async function startServer() {
     try {
-        console.log('Running database migrations...');
-        const { exec } = require('child_process');
-        await new Promise((resolve, reject) => {
-            exec('node db/run-migrations.js', (error, stdout, stderr) => {
-                if (error) {
-                    console.error('Migration error:', stderr);
-                    return reject(error);
-                }
-                console.log('Migrations completed:', stdout);
-                resolve();
+        console.log('Starting server...');
+        
+        // Only run migrations in production
+        if (process.env.NODE_ENV === 'production' || process.env.VERCEL === '1') {
+            console.log('Running database migrations...');
+            const { exec } = require('child_process');
+            await new Promise((resolve, reject) => {
+                const migration = exec('node db/run-migrations.js');
+                
+                migration.stdout.on('data', (data) => {
+                    console.log(`Migration: ${data}`);
+                });
+                
+                migration.stderr.on('data', (data) => {
+                    console.error(`Migration error: ${data}`);
+                });
+                
+                migration.on('close', (code) => {
+                    if (code === 0) {
+                        console.log('Migrations completed successfully');
+                        resolve();
+                    } else {
+                        console.error(`Migrations failed with code ${code}`);
+                        reject(new Error(`Migrations failed with code ${code}`));
+                    }
+                });
             });
-        });
+        }
 
-        console.log('Database initialized successfully');
+
+        console.log('Database initialization complete');
         
         // Start server locally if not in Vercel
         if (process.env.VERCEL !== '1') {
@@ -176,7 +193,13 @@ async function startServer() {
     }
 }
 
-startServer();
+// Only start server if this file is run directly (not when imported as a module)
+if (require.main === module) {
+    startServer().catch(error => {
+        console.error('Fatal error during startup:', error);
+        process.exit(1);
+    });
+}
 
 // Export the Express app for Vercel serverless
 module.exports = app;
