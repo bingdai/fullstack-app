@@ -47,15 +47,11 @@ document.addEventListener('DOMContentLoaded', async () => {
      * @param {object} book
      */
     const updateBookInfo = (book) => {
-        const titleEl = document.getElementById('book-title');
-        const descEl = document.getElementById('book-description');
-        const chapterCountEl = document.getElementById('chapter-count');
-        const bookTypeEl = document.getElementById('book-type');
-        
-        if (titleEl) titleEl.textContent = book.name || 'Untitled Book';
-        if (descEl) descEl.textContent = book.description || 'No description available';
-        if (chapterCountEl) chapterCountEl.textContent = book.chapter_count || 0;
-        if (bookTypeEl) bookTypeEl.textContent = book.testament || 'Unknown';
+        if (!book) return;
+        setElementTextById('book-title', book.name || 'Untitled Book');
+        setElementTextById('book-description', book.description || 'No description available');
+        setElementTextById('chapter-count', book.chapter_count || 0);
+        setElementTextById('book-type', book.testament || 'Unknown');
     };
 
     /**
@@ -411,6 +407,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+    /**
+     * Safely set textContent only if the element exists
+     * @param {string} id
+     * @param {string} text
+     */
+    function setElementTextById(id, text) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    }
+
     // --- Main Logic ---
     const main = async () => {
         const bookShort = getBookShortFromUrl();
@@ -429,11 +435,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         try {
             // Show loading state for book data
-            const titleEl = document.getElementById('book-title');
-            const descEl = document.getElementById('book-description');
-            
-            if (titleEl) titleEl.textContent = 'Loading...';
-            if (descEl) descEl.textContent = 'Please wait while we load the book data...';
+            setElementTextById('book-title', 'Loading...');
+            setElementTextById('book-description', 'Please wait while we load the book data...');
             
             const data = await fetchBookData(bookShort);
             console.log('Fetched book data:', data);
