@@ -68,16 +68,48 @@ app.get('/api/books/:book', async (req, res) => {
     }
 });
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files with proper caching headers
+app.use(express.static(path.join(__dirname, 'public'), {
+    maxAge: '1d',
+    setHeaders: (res, path) => {
+        if (path.endsWith('.html')) {
+            res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+        }
+    }
+}));
 
-// Book pages
-app.get('/books/:book', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'book.html'));
+// API routes
+app.get('/api/books/:book', async (req, res) => {
+    const { book } = req.params;
+    try {
+        console.log('Received request for book:', book);
+        const bookResult = await query('SELECT * FROM bible.books WHERE short = $1', [book]);
+        console.log('Book query result:', bookResult.rows);
+        if (bookResult.rows.length === 0) {
+            console.log('Book not found:', book);
+            return res.status(404).json({ error: 'Book not found' });
+        }
+        const chaptersResult = await query(
+            'SELECT * FROM bible.chapters WHERE book_id = $1 ORDER BY number',
+            [bookResult.rows[0].id]
+        );
+        res.json({ book: bookResult.rows[0], chapters: chaptersResult.rows });
+    } catch (error) {
+        console.error('Error fetching book data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
-// Homepage
-app.get('/', (req, res) => {
+// Client-side routing - serve index.html for all non-API routes
+app.get('*', (req, res) => {
+    // If the request is for an API route, return 404
+    if (req.path.startsWith('/api/')) {
+        return res.status(404).json({ error: 'Not found' });
+    }
+    // Otherwise serve the appropriate HTML file
+    if (req.path.startsWith('/books/')) {
+        return res.sendFile(path.join(__dirname, 'public', 'book.html'));
+    }
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
