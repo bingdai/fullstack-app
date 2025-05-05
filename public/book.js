@@ -12,6 +12,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     /**
+     * Extracts the chapter number from the URL (e.g., /books/Jas/1)
+     * @returns {number|null}
+     */
+    const getChapterFromUrl = () => {
+        const match = window.location.pathname.match(/\/books\/[^\/]+\/(\d+)/);
+        return match ? parseInt(match[1], 10) : null;
+    };
+
+    /**
      * Fetch book data from API
      * @param {string} bookShort
      * @returns {Promise<object>}
@@ -38,10 +47,210 @@ document.addEventListener('DOMContentLoaded', async () => {
      * @param {object} book
      */
     const updateBookInfo = (book) => {
-        document.getElementById('book-title').textContent = book.name;
-        document.getElementById('book-description').textContent = book.description || 'No description available';
-        document.getElementById('chapter-count').textContent = book.chapter_count || 0;
-        document.getElementById('book-type').textContent = book.testament || 'Unknown';
+        const titleEl = document.getElementById('book-title');
+        const descEl = document.getElementById('book-description');
+        const chapterCountEl = document.getElementById('chapter-count');
+        const bookTypeEl = document.getElementById('book-type');
+        
+        if (titleEl) titleEl.textContent = book.name || 'Untitled Book';
+        if (descEl) descEl.textContent = book.description || 'No description available';
+        if (chapterCountEl) chapterCountEl.textContent = book.chapter_count || 0;
+        if (bookTypeEl) bookTypeEl.textContent = book.testament || 'Unknown';
+    };
+
+    /**
+     * Render chapter content in DOM
+     * @param {Object} data - Chapter data including translations
+     */
+    const renderChapterContent = (data) => {
+        const contentContainer = document.getElementById('chapter-content-container');
+        const contentDiv = document.getElementById('chapter-content');
+        
+        if (!contentDiv || !contentContainer) {
+            console.error('Chapter content elements not found');
+            return;
+        }
+
+        contentDiv.innerHTML = '';
+        
+        // Create chapter header with navigation
+        const chapterHeader = document.createElement('div');
+        chapterHeader.className = 'chapter-header';
+        
+        // Add chapter title
+        const title = document.createElement('h2');
+        title.textContent = `${data.book.name} ${data.chapter.number}`;
+        chapterHeader.appendChild(title);
+        
+        // Create translation selector if multiple translations available
+        const translations = Object.keys(data.translations);
+        if (translations.length > 1) {
+            const selectorWrapper = document.createElement('div');
+            selectorWrapper.className = 'translation-selector-wrapper';
+            
+            const label = document.createElement('span');
+            label.textContent = 'Translation:';
+            label.className = 'translation-label';
+            
+            const selector = document.createElement('select');
+            selector.id = 'translation-selector';
+            selector.className = 'translation-selector';
+            
+            translations.forEach(code => {
+                const option = document.createElement('option');
+                option.value = code;
+                option.textContent = data.translations[code].name;
+                selector.appendChild(option);
+            });
+            
+            selectorWrapper.appendChild(label);
+            selectorWrapper.appendChild(selector);
+            chapterHeader.appendChild(selectorWrapper);
+            
+            // Add event listener to switch translations
+            selector.addEventListener('change', () => {
+                showTranslation(data, selector.value);
+            });
+        }
+        
+        contentDiv.appendChild(chapterHeader);
+        
+        // Add chapter navigation controls
+        const navControls = document.createElement('div');
+        navControls.className = 'chapter-nav-controls';
+        
+        const prevChapter = document.createElement('button');
+        prevChapter.className = 'nav-button prev-chapter';
+        prevChapter.innerHTML = '&larr; Previous Chapter';
+        prevChapter.onclick = () => {
+            const prevChapterNum = parseInt(data.chapter.number, 10) - 1;
+            if (prevChapterNum > 0) {
+                loadChapter(data.book.short, prevChapterNum);
+            }
+        };
+        
+        const nextChapter = document.createElement('button');
+        nextChapter.className = 'nav-button next-chapter';
+        nextChapter.innerHTML = 'Next Chapter &rarr;';
+        nextChapter.onclick = () => {
+            const nextChapterNum = parseInt(data.chapter.number, 10) + 1;
+            // Assuming we don't know the max chapters, we'll let the API handle validation
+            loadChapter(data.book.short, nextChapterNum);
+        };
+        
+        navControls.appendChild(prevChapter);
+        navControls.appendChild(nextChapter);
+        contentDiv.appendChild(navControls);
+
+        // Create verses container
+        const versesContainer = document.createElement('div');
+        versesContainer.className = 'verses-container';
+        versesContainer.id = 'verses-container';
+        contentDiv.appendChild(versesContainer);
+        
+        // Show first translation by default
+        if (translations.length > 0) {
+            showTranslation(data, translations[0]);
+        }
+        
+        // Add navigation controls at the bottom as well
+        const bottomNavControls = navControls.cloneNode(true);
+        
+        // Re-attach event listeners for the cloned buttons
+        bottomNavControls.querySelector('.prev-chapter').onclick = () => {
+            const prevChapterNum = parseInt(data.chapter.number, 10) - 1;
+            if (prevChapterNum > 0) {
+                loadChapter(data.book.short, prevChapterNum);
+            }
+        };
+        
+        bottomNavControls.querySelector('.next-chapter').onclick = () => {
+            const nextChapterNum = parseInt(data.chapter.number, 10) + 1;
+            loadChapter(data.book.short, nextChapterNum);
+        };
+        
+        contentDiv.appendChild(bottomNavControls);
+    };
+
+    /**
+     * Show a specific translation of the chapter
+     * @param {Object} data - Chapter data
+     * @param {string} translationCode - Translation code to show
+     */
+    const showTranslation = (data, translationCode) => {
+        const versesContainer = document.getElementById('verses-container');
+        
+        if (!versesContainer) {
+            console.error('Verses container not found');
+            return;
+        }
+        
+        // Get the translation
+        const translation = data.translations[translationCode];
+        if (!translation) {
+            console.error(`Translation ${translationCode} not found`);
+            versesContainer.innerHTML = '<div class="error-message">Translation not found</div>';
+            return;
+        }
+        
+        // Update the selector if it exists
+        const selector = document.getElementById('translation-selector');
+        if (selector) {
+            selector.value = translationCode;
+        }
+        
+        // Clear previous verses
+        versesContainer.innerHTML = '';
+        
+        // Create verses container
+        const versesDiv = document.createElement('div');
+        versesDiv.className = 'verses';
+        
+        // Add each verse
+        if (data.verses && Array.isArray(data.verses)) {
+            data.verses.forEach(verse => {
+                const verseDiv = document.createElement('div');
+                verseDiv.className = 'verse';
+                verseDiv.id = `verse-${verse.number}`;
+                
+                const verseNumber = document.createElement('span');
+                verseNumber.className = 'verse-number';
+                verseNumber.textContent = verse.number;
+                
+                const verseText = document.createElement('span');
+                verseText.className = 'verse-text';
+                
+                // Find the verse text in the current translation
+                const verseTranslation = translation.verses && Array.isArray(translation.verses) 
+                    ? translation.verses.find(v => v.verse_number === verse.number) 
+                    : null;
+                
+                if (verseTranslation) {
+                    verseText.textContent = verseTranslation.text;
+                } else {
+                    verseText.innerHTML = '<em>Verse not available in this translation</em>';
+                }
+                
+                verseDiv.appendChild(verseNumber);
+                verseDiv.appendChild(verseText);
+                versesDiv.appendChild(verseDiv);
+                
+                // Add click handler to highlight verse
+                verseDiv.addEventListener('click', () => {
+                    // Remove highlight from all verses
+                    document.querySelectorAll('.verse').forEach(v => {
+                        v.classList.remove('highlighted');
+                    });
+                    
+                    // Add highlight to this verse
+                    verseDiv.classList.add('highlighted');
+                });
+            });
+        } else {
+            versesDiv.innerHTML = '<div class="error-message">No verses available</div>';
+        }
+        
+        versesContainer.appendChild(versesDiv);
     };
 
     /**
@@ -50,20 +259,55 @@ document.addEventListener('DOMContentLoaded', async () => {
      * @param {string} bookShort
      */
     const renderChapters = (chapters, bookShort) => {
-        const chapterGroupsDiv = document.getElementById('chapter-groups');
-        chapterGroupsDiv.innerHTML = '';
-        if (!chapters.length) {
-            chapterGroupsDiv.innerHTML = '<div>No chapters found.</div>';
+        console.log('Rendering chapters:', chapters.length);
+        const chaptersContainer = document.getElementById('chapters-list');
+        const loadingIndicator = document.getElementById('loading-chapters');
+        
+        console.log('Chapters container:', chaptersContainer);
+        console.log('Loading indicator:', loadingIndicator);
+        
+        if (!chaptersContainer) {
+            console.error('Chapters container not found');
             return;
         }
-        const ul = document.createElement('ul');
-        ul.className = 'chapters-list';
+
+        // Remove loading indicator completely from DOM
+        if (loadingIndicator && loadingIndicator.parentNode) {
+            console.log('Removing loading indicator from DOM');
+            loadingIndicator.parentNode.removeChild(loadingIndicator);
+        } else {
+            console.error('Loading indicator element not found or has no parent');
+        }
+
+        chaptersContainer.innerHTML = '';
+
+        // Create chapter links
         chapters.forEach(chapter => {
-            const li = document.createElement('li');
-            li.innerHTML = `<a href="/books/${bookShort}/${chapter.number}">Chapter ${chapter.number}</a>`;
-            ul.appendChild(li);
+            const chapterLink = document.createElement('a');
+            chapterLink.href = `/books/${bookShort}/${chapter.number}`;
+            chapterLink.className = 'chapter-link';
+            chapterLink.setAttribute('data-chapter', chapter.number);
+            chapterLink.textContent = chapter.number;
+            
+            // Add click event to load chapter without page refresh
+            chapterLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                loadChapter(bookShort, chapter.number);
+            });
+            
+            chaptersContainer.appendChild(chapterLink);
         });
-        chapterGroupsDiv.appendChild(ul);
+
+        // Check if we have a chapter in the URL and highlight it
+        const chapterNum = getChapterFromUrl();
+        if (chapterNum) {
+            const activeChapter = chaptersContainer.querySelector(`[data-chapter="${chapterNum}"]`);
+            if (activeChapter) {
+                activeChapter.classList.add('active');
+            }
+        }
+        
+        console.log('Finished rendering chapters');
     };
 
     /**
@@ -83,18 +327,159 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.body.appendChild(errorDiv);
     };
 
+    /**
+     * Load chapter content
+     * @param {string} bookShort
+     * @param {number} chapterNum
+     */
+    const loadChapter = async (bookShort, chapterNum) => {
+        const chapterContentContainer = document.getElementById('chapter-content-container');
+        const chapterContent = document.getElementById('chapter-content');
+        const loadingIndicator = document.getElementById('loading-chapter');
+        
+        if (!chapterContent || !chapterContentContainer) {
+            console.error('Chapter content element not found');
+            showError('Could not find the chapter content area.');
+            return;
+        }
+        
+        try {
+            // Show loading state
+            chapterContent.innerHTML = '<div class="loading">Loading chapter content...</div>';
+            if (loadingIndicator) loadingIndicator.style.display = 'block';
+            
+            // Update URL without page reload
+            if (window.history && window.history.pushState) {
+                window.history.pushState(
+                    { bookShort, chapterNum },
+                    '',
+                    `/books/${bookShort}/${chapterNum}`
+                );
+            }
+            
+            // Highlight active chapter in navigation
+            const chapterLinks = document.querySelectorAll('.chapter-link');
+            if (chapterLinks && chapterLinks.length > 0) {
+                chapterLinks.forEach(link => {
+                    if (link && link.classList) {
+                        link.classList.remove('active');
+                        if (link.getAttribute('data-chapter') === chapterNum.toString()) {
+                            link.classList.add('active');
+                        }
+                    }
+                });
+            }
+            
+            // Fetch chapter data
+            console.log(`Fetching chapter data for ${bookShort} chapter ${chapterNum}`);
+            const response = await fetch(`/api/books/${bookShort}/${chapterNum}`);
+            
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.details || `HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('Chapter data received:', data);
+            
+            if (!data || !data.book || !data.chapter) {
+                throw new Error('Invalid chapter data received from server');
+            }
+            
+            // Render chapter content
+            renderChapterContent(data);
+            
+            // Update document title
+            document.title = `${data.book.name} ${data.chapter.number} - Bible App`;
+            
+        } catch (error) {
+            console.error('Error loading chapter:', error);
+            const errorMessage = `Failed to load chapter ${chapterNum}. ${error.message || ''}`.trim();
+            
+            if (chapterContent) {
+                chapterContent.innerHTML = `
+                    <div class="error-message">
+                        <h3>Error Loading Chapter</h3>
+                        <p>${errorMessage}</p>
+                        <button onclick="location.reload()" class="retry-button">Try Again</button>
+                    </div>`;
+            } else {
+                showError(errorMessage);
+            }
+        } finally {
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
+        }
+    };
+
     // --- Main Logic ---
-    const bookShort = getBookShortFromUrl();
-    if (!bookShort) {
-        showError('Invalid book URL.');
-        return;
-    }
-    try {
-        const data = await fetchBookData(bookShort);
-        updateBookInfo(data.book);
-        renderChapters(data.chapters, bookShort);
-    } catch (error) {
-        console.error('Error initializing book page:', error);
-        showError(error.message || 'Failed to load book data. Please try again later.');
-    }
+    const main = async () => {
+        const bookShort = getBookShortFromUrl();
+        const chapterNum = getChapterFromUrl();
+        
+        // Hide any previous error messages
+        const errorContainer = document.getElementById('error-container');
+        if (errorContainer) {
+            errorContainer.style.display = 'none';
+        }
+        
+        if (!bookShort) {
+            showError('Invalid book URL.');
+            return;
+        }
+
+        try {
+            // Show loading state for book data
+            const titleEl = document.getElementById('book-title');
+            const descEl = document.getElementById('book-description');
+            
+            if (titleEl) titleEl.textContent = 'Loading...';
+            if (descEl) descEl.textContent = 'Please wait while we load the book data...';
+            
+            const data = await fetchBookData(bookShort);
+            console.log('Fetched book data:', data);
+            if (!data || !data.book) {
+                throw new Error('Invalid book data received from server');
+            }
+            
+            updateBookInfo(data.book);
+            
+            // Render chapters and handle the current chapter
+            if (data.chapters && data.chapters.length > 0) {
+                renderChapters(data.chapters, bookShort);
+                
+                // If there's a chapter in the URL, load it
+                if (chapterNum) {
+                    await loadChapter(bookShort, chapterNum);
+                } else {
+                    // Load the first chapter by default
+                    await loadChapter(bookShort, 1);
+                }
+            } else {
+                showError('No chapters available for this book.');
+            }
+            
+        } catch (error) {
+            console.error('Error in main logic:', error);
+            showError(error.message || 'Failed to load book data. Please try again later.');
+        } finally {
+            // ALWAYS remove loading indicator
+            const loadingIndicator = document.getElementById('loading-chapters');
+            if (loadingIndicator && loadingIndicator.parentNode) {
+                loadingIndicator.parentNode.removeChild(loadingIndicator);
+            }
+        }
+    };
+    
+    // Start the main logic
+    main();
+    
+    // Handle browser back/forward navigation
+    window.addEventListener('popstate', async (event) => {
+        if (event.state && event.state.bookShort) {
+            const chapter = getChapterFromUrl();
+            if (chapter) {
+                await loadChapter(event.state.bookShort, chapter);
+            }
+        }
+    });
 });
