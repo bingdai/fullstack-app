@@ -151,7 +151,7 @@ const journalDb = {
       LEFT JOIN (
         SELECT verse_id, text
         FROM bible.verse_translations
-        WHERE translation_id = (SELECT id FROM bible.translations WHERE code = 'ESV' LIMIT 1)
+        WHERE translation_id = (SELECT id FROM bible.translations WHERE code = 'WEB' LIMIT 1)
       ) vt2 ON v.id = vt2.verse_id
       WHERE vt.entry_id = $1
       ORDER BY vt.start_offset
