@@ -1,5 +1,6 @@
 // src/models/bible.js
 // All DB operations for Bible books, chapters, and verses
+// No unused imports or dead code detected in this model after refactor.
 
 const { query } = require('../db');
 

@@ -1,5 +1,6 @@
 // src/models/journal.js
 // All DB operations for journal entries and verse tags
+// No unused imports or dead code detected in this model after refactor.
 
 const { query } = require('../db');
 

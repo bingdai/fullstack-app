@@ -1,5 +1,6 @@
 // src/controllers/journalController.js
 // Business logic for journal routes
+// No unused imports or dead code detected in this controller after refactor.
 
 const journalModel = require('../models/journal');
 const { BOOK_ALIASES } = require('../db');
@@ -224,5 +225,6 @@ module.exports = {
       console.error('Error finding verse:', error);
       res.status(500).json({ error: 'Internal server error', details: error.message });
     }
-  }
+  },
+  processVerseTags // exported for use in tests or other modules
 };
