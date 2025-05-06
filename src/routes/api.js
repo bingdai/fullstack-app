@@ -4,10 +4,31 @@ const router = express.Router();
 const { query } = require('../db');
 
 // GET book data
+// Book code aliases for flexibility
+const BOOK_ALIASES = {
+    mic: 'Micah',
+    micah: 'Micah',
+    nah: 'Nah',
+    nahum: 'Nah',
+    hab: 'Hab',
+    habakkuk: 'Hab',
+    zeph: 'Zeph',
+    zephaniah: 'Zeph',
+    hag: 'Hag',
+    haggai: 'Hag',
+    zech: 'Zech',
+    zechariah: 'Zech',
+    mal: 'Mal',
+    malachi: 'Mal',
+    // add more aliases as needed
+};
+
 router.get('/books/:book', async (req, res) => {
-    const { book } = req.params;
+    let { book } = req.params;
+    book = (book || '').toLowerCase();
+    const normalizedBook = BOOK_ALIASES[book] || book.charAt(0).toUpperCase() + book.slice(1);
     try {
-        const bookResult = await query('SELECT * FROM bible.books WHERE short = $1', [book]);
+        const bookResult = await query('SELECT * FROM bible.books WHERE LOWER(short) = LOWER($1)', [normalizedBook]);
         if (bookResult.rows.length === 0) {
             return res.status(404).json({ error: 'Book not found' });
         }
@@ -23,10 +44,12 @@ router.get('/books/:book', async (req, res) => {
 
 // GET chapter content
 router.get('/books/:book/:chapter', async (req, res) => {
-    const { book, chapter } = req.params;
+    let { book, chapter } = req.params;
+    book = (book || '').toLowerCase();
+    const normalizedBook = BOOK_ALIASES[book] || book.charAt(0).toUpperCase() + book.slice(1);
     try {
         // Get book data
-        const bookResult = await query('SELECT * FROM bible.books WHERE short = $1', [book]);
+        const bookResult = await query('SELECT * FROM bible.books WHERE LOWER(short) = LOWER($1)', [normalizedBook]);
         if (bookResult.rows.length === 0) {
             return res.status(404).json({ error: 'Book not found' });
         }
