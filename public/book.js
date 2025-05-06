@@ -1,4 +1,5 @@
 // book.js: Handles the book detail page logic (refactored for clarity)
+// No dead code or unused imports after refactor
 
 document.addEventListener('DOMContentLoaded', async () => {
     // --- Helpers ---

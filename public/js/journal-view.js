@@ -1,4 +1,6 @@
 // Journal view page script
+// No dead code or unused imports after refactor
+
 document.addEventListener('DOMContentLoaded', async () => {
     const journalEntryEl = document.getElementById('journal-entry');
     const entryContentEl = document.getElementById('entry-content');

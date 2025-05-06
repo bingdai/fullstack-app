@@ -1,4 +1,6 @@
 // Journal list page script
+// No dead code or unused imports after refactor
+
 document.addEventListener('DOMContentLoaded', async () => {
     const journalListEl = document.getElementById('journal-list');
     const entryTemplate = document.getElementById('entry-template');

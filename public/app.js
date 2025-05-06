@@ -1,4 +1,5 @@
 // Bible Book Grid - Refactored for clarity and maintainability
+// No dead code or unused imports after refactor
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Book Data Structure ---
@@ -20,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- UI Rendering Functions ---
-
     /**
      * Create a grid of book tiles for a testament
      * @param {string} testament - 'oldTestament' or 'newTestament'

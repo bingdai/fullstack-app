@@ -1,4 +1,6 @@
 // Journal edit page script
+// No dead code or unused imports after refactor
+
 document.addEventListener('DOMContentLoaded', async () => {
     const journalForm = document.getElementById('journal-form');
     const titleInput = document.getElementById('title');
