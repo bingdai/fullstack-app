@@ -510,13 +510,11 @@ a:hover {
 }
 
 .chapters-list.psalms {
-  flex-wrap: nowrap;
-  overflow-x: auto;
+  flex-wrap: wrap;
+  overflow-x: visible;
   max-width: 100%;
-  white-space: nowrap;
+  white-space: normal;
   padding-bottom: 8px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-color) #fafbfc;
 }
 
 .chapters-list.psalms .chapter-link {
