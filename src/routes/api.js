@@ -1,7 +1,8 @@
 // src/routes/api.js
 const express = require('express');
 const router = express.Router();
-const { query, journalDb } = require('../db');
+const { query } = require('../db');
+const journalController = require('../controllers/journalController');
 
 // GET book data
 // Book code aliases for flexibility
@@ -107,13 +108,6 @@ router.get('/books/:book/:chapter', async (req, res) => {
             });
         });
 
-        // Log the response for debugging
-        console.log('Sending chapter data with translations:', 
-            Object.keys(translations).length, 
-            'translations and', 
-            verses.length, 
-            'verses');
-
         res.json({
             book: bookData,
             chapter: chapterData,
@@ -127,139 +121,11 @@ router.get('/books/:book/:chapter', async (req, res) => {
 });
 
 // Journal API Routes
-
-// GET all journal entries
-router.get('/journal', async (req, res) => {
-    try {
-        const entries = await journalDb.getAllEntries();
-        res.json(entries);
-    } catch (error) {
-        console.error('Error fetching journal entries:', error);
-        if (error.stack) {
-            console.error('Stack:', error.stack);
-        }
-        res.status(500).json({ error: 'Internal server error', details: error.message, stack: error.stack });
-    }
-});
-
-// GET single journal entry with verse tags
-router.get('/journal/:id', async (req, res) => {
-    try {
-        const entry = await journalDb.getEntry(req.params.id);
-        if (!entry) {
-            return res.status(404).json({ error: 'Journal entry not found' });
-        }
-        
-        // Get verse tags for this entry
-        const verseTags = await journalDb.getEntryVerseTags(entry.id);
-        
-        res.json({
-            ...entry,
-            verse_tags: verseTags
-        });
-    } catch (error) {
-        console.error('Error fetching journal entry:', error);
-        res.status(500).json({ error: 'Internal server error', details: error.message });
-    }
-});
-
-// POST create journal entry
-router.post('/journal', async (req, res) => {
-    try {
-        const { title, content, verse_tags } = req.body;
-        
-        if (!content) {
-            return res.status(400).json({ error: 'Content is required' });
-        }
-        
-        // Create journal entry
-        const entry = await journalDb.createEntry(title, content);
-        
-        // Process verse tags using @Book Chapter:Verse syntax
-        await journalDb.processVerseTags(entry.id, content, verse_tags);
-        
-        // Get the updated entry with verse tags
-        const updatedEntry = await journalDb.getEntry(entry.id);
-        const verseTags = await journalDb.getEntryVerseTags(entry.id);
-        
-        res.status(201).json({
-            ...updatedEntry,
-            verse_tags: verseTags
-        });
-    } catch (error) {
-        console.error('Error creating journal entry:', error);
-        res.status(500).json({ error: 'Internal server error', details: error.message });
-    }
-});
-
-// PUT update journal entry
-router.put('/journal/:id', async (req, res) => {
-    try {
-        const { title, content, verse_tags } = req.body;
-        const entryId = req.params.id;
-        
-        if (!content) {
-            return res.status(400).json({ error: 'Content is required' });
-        }
-        
-        // Update journal entry
-        const entry = await journalDb.updateEntry(entryId, title, content);
-        
-        if (!entry) {
-            return res.status(404).json({ error: 'Journal entry not found' });
-        }
-        
-        // Remove existing verse tags
-        await query('DELETE FROM journal.verse_tags WHERE entry_id = $1', [entryId]);
-        
-        // Process verse tags using @Book Chapter:Verse syntax
-        await journalDb.processVerseTags(entryId, content, verse_tags);
-        
-        // Get the updated entry with verse tags
-        const updatedEntry = await journalDb.getEntry(entryId);
-        const verseTags = await journalDb.getEntryVerseTags(entryId);
-        
-        res.json({
-            ...updatedEntry,
-            verse_tags: verseTags
-        });
-    } catch (error) {
-        console.error('Error updating journal entry:', error);
-        res.status(500).json({ error: 'Internal server error', details: error.message });
-    }
-});
-
-// DELETE journal entry
-router.delete('/journal/:id', async (req, res) => {
-    try {
-        await journalDb.deleteEntry(req.params.id);
-        res.status(204).send();
-    } catch (error) {
-        console.error('Error deleting journal entry:', error);
-        res.status(500).json({ error: 'Internal server error', details: error.message });
-    }
-});
-
-// POST to find a Bible verse by reference
-router.post('/verses/find', async (req, res) => {
-    try {
-        const { book, chapter, verse } = req.body;
-        
-        if (!book || !chapter || !verse) {
-            return res.status(400).json({ error: 'Book, chapter, and verse are required' });
-        }
-        
-        const verseData = await journalDb.findVerseByReference(book, chapter, verse);
-        
-        if (!verseData) {
-            return res.status(404).json({ error: 'Verse not found' });
-        }
-        
-        res.json(verseData);
-    } catch (error) {
-        console.error('Error finding verse:', error);
-        res.status(500).json({ error: 'Internal server error', details: error.message });
-    }
-});
+router.get('/journal', journalController.getAllEntries);
+router.get('/journal/:id', journalController.getEntry);
+router.post('/journal', journalController.createEntry);
+router.put('/journal/:id', journalController.updateEntry);
+router.delete('/journal/:id', journalController.deleteEntry);
+router.post('/verses/find', journalController.findVerseByReference);
 
 module.exports = router;
