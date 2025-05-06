@@ -2,18 +2,14 @@
 // Business logic for journal routes
 
 const journalModel = require('../models/journal');
-const BOOK_ALIASES = require('../db').BOOK_ALIASES;
-
-/**
- * Normalize book name using aliases
- */
-function normalizeBookName(bookRaw) {
-  const bookLower = bookRaw.trim().toLowerCase();
-  return BOOK_ALIASES[bookLower] || bookRaw.trim();
-}
+const { BOOK_ALIASES } = require('../db');
+const { normalizeBookName, VERSE_TAG_REGEX } = require('../utils/verseUtils');
 
 /**
  * Process verse tags from content or explicit tags
+ * @param {number} entryId - The journal entry ID
+ * @param {string} content - The journal content
+ * @param {Array} verseTags - Optional explicit verse tags
  */
 async function processVerseTags(entryId, content, verseTags) {
   // If verseTags are provided directly, use them
@@ -21,7 +17,7 @@ async function processVerseTags(entryId, content, verseTags) {
     for (const tag of verseTags) {
       try {
         const verseData = await journalModel.findVerseByReference(
-          normalizeBookName(tag.book),
+          normalizeBookName(tag.book, BOOK_ALIASES),
           tag.chapter,
           tag.verse
         );
@@ -32,11 +28,11 @@ async function processVerseTags(entryId, content, verseTags) {
             tag.startOffset,
             tag.endOffset
           );
-          // Handle verse range
+          // If it's a verse range, add the other verses too
           if (tag.endVerse && tag.endVerse > tag.verse) {
             for (let v = tag.verse + 1; v <= tag.endVerse; v++) {
               const rangeVerseData = await journalModel.findVerseByReference(
-                normalizeBookName(tag.book),
+                normalizeBookName(tag.book, BOOK_ALIASES),
                 tag.chapter,
                 v
               );
@@ -52,18 +48,17 @@ async function processVerseTags(entryId, content, verseTags) {
           }
         }
       } catch (error) {
-        console.error(`Error processing verse tag ${tag.book} ${tag.chapter}:${tag.verse}:`, error);
+        console.error('Error processing verse tag:', error);
       }
     }
     return;
   }
   // Otherwise, extract tags from content
-  const regex = /@([\w\s]+)\s+(\d+):(\d+)(?:[-–](\d+))?/g;
   let match;
-  while ((match = regex.exec(content)) !== null) {
+  while ((match = VERSE_TAG_REGEX.exec(content)) !== null) {
     try {
       const [fullMatch, bookRaw, chapterStr, startVerseStr, endVerseStr] = match;
-      const normalizedBook = normalizeBookName(bookRaw);
+      const normalizedBook = normalizeBookName(bookRaw, BOOK_ALIASES);
       const chapter = parseInt(chapterStr);
       const startVerse = parseInt(startVerseStr);
       const endVerse = endVerseStr ? parseInt(endVerseStr) : null;
@@ -79,6 +74,7 @@ async function processVerseTags(entryId, content, verseTags) {
           match.index,
           match.index + fullMatch.length
         );
+        // If it's a verse range, add the other verses too
         if (endVerse && endVerse > startVerse) {
           for (let v = startVerse + 1; v <= endVerse; v++) {
             const rangeVerseData = await journalModel.findVerseByReference(
@@ -107,6 +103,8 @@ async function processVerseTags(entryId, content, verseTags) {
 module.exports = {
   /**
    * GET /api/journal
+   * @param {Request} req
+   * @param {Response} res
    */
   async getAllEntries(req, res) {
     try {
@@ -120,6 +118,8 @@ module.exports = {
 
   /**
    * GET /api/journal/:id
+   * @param {Request} req
+   * @param {Response} res
    */
   async getEntry(req, res) {
     try {
@@ -137,6 +137,8 @@ module.exports = {
 
   /**
    * POST /api/journal
+   * @param {Request} req
+   * @param {Response} res
    */
   async createEntry(req, res) {
     try {
@@ -157,6 +159,8 @@ module.exports = {
 
   /**
    * PUT /api/journal/:id
+   * @param {Request} req
+   * @param {Response} res
    */
   async updateEntry(req, res) {
     try {
@@ -183,6 +187,8 @@ module.exports = {
 
   /**
    * DELETE /api/journal/:id
+   * @param {Request} req
+   * @param {Response} res
    */
   async deleteEntry(req, res) {
     try {
@@ -196,6 +202,8 @@ module.exports = {
 
   /**
    * POST /api/verses/find
+   * @param {Request} req
+   * @param {Response} res
    */
   async findVerseByReference(req, res) {
     try {
@@ -204,7 +212,7 @@ module.exports = {
         return res.status(400).json({ error: 'Book, chapter, and verse are required' });
       }
       const verseData = await journalModel.findVerseByReference(
-        normalizeBookName(book),
+        normalizeBookName(book, BOOK_ALIASES),
         chapter,
         verse
       );

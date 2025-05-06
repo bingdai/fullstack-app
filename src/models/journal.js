@@ -5,6 +5,9 @@ const { query } = require('../db');
 
 /**
  * Create a new journal entry
+ * @param {string} title
+ * @param {string} content
+ * @returns {Promise<Object>} The created entry
  */
 async function createEntry(title, content) {
   const result = await query(
@@ -16,6 +19,8 @@ async function createEntry(title, content) {
 
 /**
  * Get a journal entry by ID
+ * @param {number} id
+ * @returns {Promise<Object|null>} The entry or null
  */
 async function getEntry(id) {
   const result = await query('SELECT * FROM journal.entries WHERE id = $1', [id]);
@@ -24,6 +29,7 @@ async function getEntry(id) {
 
 /**
  * Get all journal entries
+ * @returns {Promise<Array>} Array of entries
  */
 async function getAllEntries() {
   const result = await query('SELECT * FROM journal.entries ORDER BY created_at DESC');
@@ -32,6 +38,10 @@ async function getAllEntries() {
 
 /**
  * Update a journal entry
+ * @param {number} id
+ * @param {string} title
+ * @param {string} content
+ * @returns {Promise<Object|null>} The updated entry or null
  */
 async function updateEntry(id, title, content) {
   const result = await query(
@@ -43,6 +53,8 @@ async function updateEntry(id, title, content) {
 
 /**
  * Delete a journal entry
+ * @param {number} id
+ * @returns {Promise<{success: boolean}>}
  */
 async function deleteEntry(id) {
   await query('DELETE FROM journal.entries WHERE id = $1', [id]);
@@ -51,6 +63,11 @@ async function deleteEntry(id) {
 
 /**
  * Create a verse tag for a journal entry
+ * @param {number} entryId
+ * @param {number} verseId
+ * @param {number} startOffset
+ * @param {number} endOffset
+ * @returns {Promise<Object>} The created verse tag
  */
 async function createVerseTag(entryId, verseId, startOffset, endOffset) {
   const result = await query(
@@ -62,6 +79,8 @@ async function createVerseTag(entryId, verseId, startOffset, endOffset) {
 
 /**
  * Get verse tags for a journal entry (fetches verse text from WEB translation)
+ * @param {number} entryId
+ * @returns {Promise<Array>} Array of verse tags
  */
 async function getEntryVerseTags(entryId) {
   const result = await query(`
@@ -85,6 +104,10 @@ async function getEntryVerseTags(entryId) {
 
 /**
  * Find Bible verse by reference (book, chapter, verse)
+ * @param {string} bookName
+ * @param {number} chapterNumber
+ * @param {number} verseNumber
+ * @returns {Promise<Object|null>} The verse row or null
  */
 async function findVerseByReference(bookName, chapterNumber, verseNumber) {
   // Book name normalization is handled in controller
@@ -101,6 +124,8 @@ async function findVerseByReference(bookName, chapterNumber, verseNumber) {
 
 /**
  * Delete a verse tag
+ * @param {number} id
+ * @returns {Promise<{success: boolean}>}
  */
 async function deleteVerseTag(id) {
   await query('DELETE FROM journal.verse_tags WHERE id = $1', [id]);
