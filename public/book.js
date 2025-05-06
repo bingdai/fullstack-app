@@ -69,15 +69,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         contentDiv.innerHTML = '';
         
-        // Create chapter header with navigation
-        const chapterHeader = document.createElement('div');
-        chapterHeader.className = 'chapter-header';
-        
-        // Add chapter title
-        const title = document.createElement('h2');
-        title.textContent = `${data.book.name} ${data.chapter.number}`;
-        chapterHeader.appendChild(title);
-        
         // Create translation selector if multiple translations available
         const translations = Object.keys(data.translations);
         if (translations.length > 1) {
@@ -101,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             selectorWrapper.appendChild(label);
             selectorWrapper.appendChild(selector);
-            chapterHeader.appendChild(selectorWrapper);
+            contentDiv.appendChild(selectorWrapper);
             
             // Add event listener to switch translations
             selector.addEventListener('change', () => {
@@ -109,12 +100,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
         
-        contentDiv.appendChild(chapterHeader);
-        
-        // Add chapter navigation controls
+        // Create verses container
+        const versesContainer = document.createElement('div');
+        versesContainer.className = 'verses-container';
+        versesContainer.id = 'verses-container';
+        contentDiv.appendChild(versesContainer);
+
+        // Add chapter navigation controls only at the bottom
         const navControls = document.createElement('div');
         navControls.className = 'chapter-nav-controls';
-        
+
         const prevChapter = document.createElement('button');
         prevChapter.className = 'nav-button prev-chapter';
         prevChapter.innerHTML = '&larr; Previous Chapter';
@@ -124,25 +119,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 loadChapter(data.book.short, prevChapterNum);
             }
         };
-        
+
         const nextChapter = document.createElement('button');
         nextChapter.className = 'nav-button next-chapter';
         nextChapter.innerHTML = 'Next Chapter &rarr;';
         nextChapter.onclick = () => {
             const nextChapterNum = parseInt(data.chapter.number, 10) + 1;
-            // Assuming we don't know the max chapters, we'll let the API handle validation
             loadChapter(data.book.short, nextChapterNum);
         };
-        
+
         navControls.appendChild(prevChapter);
         navControls.appendChild(nextChapter);
-        contentDiv.appendChild(navControls);
 
-        // Create verses container
-        const versesContainer = document.createElement('div');
-        versesContainer.className = 'verses-container';
-        versesContainer.id = 'verses-container';
-        contentDiv.appendChild(versesContainer);
         
         // Show first translation by default
         if (translations.length > 0) {
