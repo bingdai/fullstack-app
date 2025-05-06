@@ -437,6 +437,11 @@ a:hover {
   overflow-y: auto;
   position: sticky;
   top: 20px;
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
 }
 
 .chapters-header {
@@ -452,9 +457,13 @@ a:hover {
 }
 
 .chapters-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-  gap: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  min-height: 64px;
+  height: 100%;
 }
 
 .chapter-link {
@@ -491,6 +500,13 @@ a:hover {
   font-style: italic;
   font-size: 0.95rem;
   margin: 5px 0 0;
+}
+
+.chapters-list:only-child {
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  display: flex;
 }
 
 /* Responsive adjustments */
