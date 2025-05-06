@@ -1,0 +1,363 @@
+/* Journal system styles */
+
+/* General layout */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f8f9fa;
+}
+
+.journal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 20px;
+    color: #555;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: #0066cc;
+}
+
+/* Journal list page */
+.journal-entry {
+    margin-bottom: 30px;
+    padding: 25px;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.journal-entry:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 15px;
+}
+
+.entry-title {
+    margin: 0;
+    font-size: 1.6rem;
+    color: #2d3748;
+    font-weight: 600;
+}
+
+.entry-date {
+    color: #718096;
+    font-size: 0.9rem;
+}
+
+.entry-preview {
+    margin-bottom: 20px;
+    color: #4a5568;
+    line-height: 1.6;
+    font-size: 1.05rem;
+}
+
+.entry-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.verse-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.verse-tag {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #ebf5ff;
+    color: #3182ce;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.verse-tag:hover {
+    background-color: #bee3f8;
+}
+
+.view-entry {
+    color: #3182ce;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.view-entry:hover {
+    color: #2c5282;
+    text-decoration: underline;
+}
+
+/* Journal view page */
+.entry-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.entry-body {
+    line-height: 1.7;
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+    color: #2d3748;
+}
+
+.verse-references {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.verse-references h3 {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    color: #2d3748;
+}
+
+.verse-reference {
+    margin-bottom: 20px;
+    padding: 16px;
+    background-color: #f7fafc;
+    border-left: 4px solid #3182ce;
+    border-radius: 0 8px 8px 0;
+}
+
+.verse-reference-text {
+    font-style: italic;
+    color: #4a5568;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 10px;
+}
+
+.verse-citation {
+    font-weight: 600;
+    color: #3182ce;
+    font-size: 0.95rem;
+}
+
+/* Journal edit page */
+#editor-container {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+#toolbar {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    background-color: #f8fafc;
+    display: flex;
+    align-items: center;
+}
+
+.separator {
+    height: 24px;
+    width: 1px;
+    background-color: #e2e8f0;
+    margin: 0 12px;
+}
+
+#content-editor {
+    min-height: 350px;
+    padding: 20px;
+    outline: none;
+    line-height: 1.7;
+    font-size: 1.05rem;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: #3182ce;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2c5282;
+}
+
+.btn-secondary {
+    background-color: #edf2f7;
+    color: #4a5568;
+}
+
+.btn-secondary:hover {
+    background-color: #e2e8f0;
+}
+
+.btn-danger {
+    background-color: #e53e3e;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c53030;
+}
+
+/* Loading state */
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #718096;
+    font-size: 1.1rem;
+}
+
+/* Verse highlight in content */
+.verse-highlight {
+    background-color: #ebf8ff;
+    border-radius: 3px;
+    padding: 2px 0;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.verse-highlight:hover {
+    background-color: #bee3f8;
+}
+
+.verse-tooltip {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 12px;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    font-size: 0.9rem;
+    min-width: 250px;
+    max-width: 350px;
+    display: none;
+}
+
+.verse-highlight:hover .verse-tooltip {
+    display: block;
+}
+
+/* Verse tag syntax highlighting */
+.verse-tag-syntax {
+    color: #3182ce;
+    font-weight: 500;
+}
+
+/* Form styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #4a5568;
+}
+
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.form-group input[type="text"]:focus {
+    border-color: #3182ce;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.2);
+}
+
+/* Inline verse tagging help */
+.tagging-help {
+    background-color: #f7fafc;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+    color: #4a5568;
+    border-left: 4px solid #3182ce;
+}
+
+.tagging-help h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #2d3748;
+}
+
+.tagging-help code {
+    background-color: #edf2f7;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.tagging-help ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.tagging-help li {
+    margin-bottom: 6px;
+}
+
+/* No entries message */
+#no-entries {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+#no-entries p {
+    margin-bottom: 20px;
+    color: #4a5568;
+    font-size: 1.1rem;
+}

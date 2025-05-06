@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Journal Entry</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/journal.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>My Journal</h1>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/journal">Journal</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="journal-header">
+            <a href="/journal" class="back-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Back to Journal
+            </a>
+            <div class="entry-actions">
+                <a id="edit-entry-btn" class="btn btn-secondary">Edit Entry</a>
+                <button id="delete-entry-btn" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+
+        <div id="journal-entry">
+            <div class="loading">Loading journal entry...</div>
+        </div>
+
+        <div id="entry-content" style="display: none;">
+            <h2 id="entry-title"></h2>
+            <div class="entry-date" id="entry-date"></div>
+            <div class="entry-body" id="entry-content-text"></div>
+            
+            <div class="verse-references" id="verse-references">
+                <h3>Scripture References</h3>
+                <div id="verse-list"></div>
+            </div>
+        </div>
+        
+        <div id="entry-not-found" style="display: none;">
+            <p>Journal entry not found. It may have been deleted or the URL is incorrect.</p>
+            <a href="/journal" class="btn btn-primary">Back to Journal</a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Bible Journal</p>
+        </div>
+    </footer>
+
+    <script src="/js/journal-view.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journal Entries</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/journal.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>My Journal</h1>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/journal" class="active">Journal</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="journal-header">
+            <h2>My Journal Entries</h2>
+            <a href="/journal/new" class="btn btn-primary">New Entry</a>
+        </div>
+
+        <div id="journal-list">
+            <div class="loading">Loading journal entries...</div>
+        </div>
+
+        <template id="entry-template">
+            <div class="journal-entry">
+                <div class="entry-header">
+                    <h3 class="entry-title"></h3>
+                    <div class="entry-date"></div>
+                </div>
+                <div class="entry-preview"></div>
+                <div class="entry-footer">
+                    <div class="verse-tags"></div>
+                    <a class="view-entry">Continue reading →</a>
+                </div>
+            </div>
+        </template>
+
+        <div id="no-entries" style="display: none;">
+            <p>You haven't created any journal entries yet.</p>
+            <a href="/journal/new" class="btn btn-primary">Create Your First Entry</a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Bible Journal</p>
+        </div>
+    </footer>
+
+    <script src="/js/journal-list.js"></script>
+</body>
+</html>
