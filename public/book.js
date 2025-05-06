@@ -242,47 +242,97 @@ document.addEventListener('DOMContentLoaded', async () => {
      * @param {Array} chapters
      * @param {string} bookShort
      */
+    let psalmsChapterPage = 1;
+    const PSALMS_CHAPTERS_PER_PAGE = 30;
+
     const renderChapters = (chapters, bookShort) => {
         console.log('Rendering chapters:', chapters.length);
+        console.log('bookShort:', bookShort);
         const chaptersContainer = document.getElementById('chapters-list');
+        const chaptersNav = chaptersContainer.parentElement; // aside.chapters-nav
         const loadingIndicator = document.getElementById('loading-chapters');
-        
-        console.log('Chapters container:', chaptersContainer);
-        console.log('Loading indicator:', loadingIndicator);
-        
-        if (!chaptersContainer) {
-            console.error('Chapters container not found');
-            return;
-        }
 
-        // Remove loading indicator completely from DOM
-        if (loadingIndicator && loadingIndicator.parentNode) {
-            console.log('Removing loading indicator from DOM');
-            loadingIndicator.parentNode.removeChild(loadingIndicator);
+        const isPsalms = bookShort && (bookShort.toLowerCase() === 'ps' || bookShort.toLowerCase() === 'psa' || bookShort.toLowerCase() === 'psalm' || bookShort.toLowerCase() === 'psalms');
+        console.log('isPsalms:', isPsalms, 'psalmsChapterPage:', psalmsChapterPage);
+        if (isPsalms) {
+            chaptersContainer.classList.add('psalms');
         } else {
-            console.error('Loading indicator element not found or has no parent');
+            chaptersContainer.classList.remove('psalms');
+            psalmsChapterPage = 1; // Reset when switching books
         }
 
+        if (loadingIndicator && loadingIndicator.parentNode) {
+            loadingIndicator.parentNode.removeChild(loadingIndicator);
+        }
         chaptersContainer.innerHTML = '';
 
-        // Create chapter links
-        chapters.forEach(chapter => {
+        // Remove any old pagination controls
+        const oldPagination = chaptersNav.querySelector('.chapter-pagination-controls');
+        if (oldPagination) oldPagination.remove();
+
+        let chaptersToRender = chapters;
+        let totalPages = 1;
+        let currentPage = 1;
+        if (isPsalms) {
+            totalPages = Math.ceil(chapters.length / PSALMS_CHAPTERS_PER_PAGE);
+            currentPage = psalmsChapterPage;
+            chaptersToRender = paginate(chapters, PSALMS_CHAPTERS_PER_PAGE, currentPage);
+            // Add prev/next controls ABOVE chapters-list
+            const navWrapper = document.createElement('div');
+            navWrapper.className = 'chapter-pagination-controls';
+            navWrapper.style.display = 'flex';
+            navWrapper.style.justifyContent = 'center';
+            navWrapper.style.gap = '8px';
+            navWrapper.style.marginBottom = '12px';
+            navWrapper.style.background = '#f5f6fa';
+            navWrapper.style.border = '1px solid #e2e8f0';
+            navWrapper.style.padding = '6px 12px';
+            navWrapper.style.borderRadius = '8px';
+            if (currentPage > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.textContent = '← Prev';
+                prevBtn.className = 'nav-button';
+                prevBtn.onclick = () => {
+                    psalmsChapterPage--;
+                    console.log('Prev clicked. psalmsChapterPage:', psalmsChapterPage);
+                    renderChapters(chapters, bookShort);
+                };
+                navWrapper.appendChild(prevBtn);
+            }
+            const label = document.createElement('span');
+            const start = (currentPage - 1) * PSALMS_CHAPTERS_PER_PAGE + 1;
+            const end = Math.min(currentPage * PSALMS_CHAPTERS_PER_PAGE, chapters.length);
+            label.textContent = `Chapters ${start}–${end} of ${chapters.length}`;
+            navWrapper.appendChild(label);
+            if (currentPage < totalPages) {
+                const nextBtn = document.createElement('button');
+                nextBtn.textContent = 'Next →';
+                nextBtn.className = 'nav-button';
+                nextBtn.onclick = () => {
+                    psalmsChapterPage++;
+                    console.log('Next clicked. psalmsChapterPage:', psalmsChapterPage);
+                    renderChapters(chapters, bookShort);
+                };
+                navWrapper.appendChild(nextBtn);
+            }
+            // Insert before chapters-list
+            chaptersNav.insertBefore(navWrapper, chaptersContainer);
+        }
+
+        chaptersToRender.forEach(chapter => {
             const chapterLink = document.createElement('a');
             chapterLink.href = `/books/${bookShort}/${chapter.number}`;
             chapterLink.className = 'chapter-link';
             chapterLink.setAttribute('data-chapter', chapter.number);
             chapterLink.textContent = chapter.number;
-            
-            // Add click event to load chapter without page refresh
             chapterLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 loadChapter(bookShort, chapter.number);
             });
-            
             chaptersContainer.appendChild(chapterLink);
         });
 
-        // Check if we have a chapter in the URL and highlight it
+        // Highlight active chapter
         const chapterNum = getChapterFromUrl();
         if (chapterNum) {
             const activeChapter = chaptersContainer.querySelector(`[data-chapter="${chapterNum}"]`);
@@ -290,9 +340,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 activeChapter.classList.add('active');
             }
         }
-        
         console.log('Finished rendering chapters');
     };
+
+    // Helper to paginate an array
+    function paginate(array, page_size, page_number) {
+        // page_number is 1-based
+        return array.slice((page_number - 1) * page_size, page_number * page_size);
+    }
 
     /**
      * Show user-friendly error message
