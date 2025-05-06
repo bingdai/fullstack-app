@@ -114,7 +114,7 @@ SELECT b.id, generate_series(1, 6) FROM bible.books b WHERE b.short = '1Tim';
 INSERT INTO bible.chapters (book_id, number)
 SELECT b.id, generate_series(1, 4) FROM bible.books b WHERE b.short = '2Tim';
 INSERT INTO bible.chapters (book_id, number)
-SELECT b.id, generate_series(1, 1) FROM bible.books b WHERE b.short = 'Titus';
+SELECT b.id, generate_series(1, 3) FROM bible.books b WHERE b.short = 'Titus';
 INSERT INTO bible.chapters (book_id, number)
 SELECT b.id, generate_series(1, 1) FROM bible.books b WHERE b.short = 'Phlm';
 INSERT INTO bible.chapters (book_id, number)
