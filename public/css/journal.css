@@ -149,6 +149,24 @@ body {
     border-radius: 0 8px 8px 0;
 }
 
+.verse-reference-textarea, #content-editor {
+  width: 100%;
+  min-height: 200px;
+  resize: none;
+  overflow: hidden;
+  box-sizing: border-box;
+  font-size: 1.1rem;
+  padding: 12px 10px;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+  transition: border-color 0.2s;
+}
+
+textarea:focus, #content-editor:focus {
+  border-color: #8a9cff;
+  outline: none;
+}
+
 .verse-reference-text {
     font-style: italic;
     color: #4a5568;

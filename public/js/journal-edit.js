@@ -11,8 +11,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Guarantee clean content on every input (no HTML except verse tags)
     contentEditor.addEventListener('input', () => {
+        // Auto-grow textarea
+        contentEditor.style.height = 'auto';
+        contentEditor.style.height = contentEditor.scrollHeight + 'px';
         highlightVerseTags();
     });
+    // Initialize height on page load
+    contentEditor.style.height = 'auto';
+    contentEditor.style.height = contentEditor.scrollHeight + 'px';
 
     // Get entry ID from URL if editing an existing entry
     const urlParts = window.location.pathname.split('/');
