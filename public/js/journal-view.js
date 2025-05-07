@@ -53,8 +53,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             day: 'numeric'
         });
         
-        // Process content and highlight verse references
-        entryContentTextEl.innerHTML = processContentWithVerseTags(entry.content, entry.verse_tags);
+        // Process content and highlight verse references (simple highlighting only)
+        entryContentTextEl.innerHTML = highlightVerseTagsForDisplay(entry.content);
         
         // Display verse references
         if (entry.verse_tags && entry.verse_tags.length > 0) {
@@ -96,34 +96,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
     }
     
-    // Function to process content and highlight verse references
-    function processContentWithVerseTags(content, verseTags) {
-        if (!verseTags || verseTags.length === 0) {
-            return content;
-        }
-        
-        // Sort tags by start offset in descending order to avoid position shifts
-        const sortedTags = [...verseTags].sort((a, b) => b.start_offset - a.start_offset);
-        
-        let processedContent = content;
-        
-        sortedTags.forEach(tag => {
-            const verseRef = `${tag.book_name} ${tag.chapter_number}:${tag.verse_number}`;
-            const taggedText = processedContent.substring(tag.start_offset, tag.end_offset);
-            
-            processedContent = 
-                processedContent.substring(0, tag.start_offset) +
-                `<span class="verse-highlight" data-verse-id="${tag.verse_id}">
-                    ${taggedText}
-                    <div class="verse-tooltip">${verseRef}</div>
-                </span>` +
-                processedContent.substring(tag.end_offset);
-        });
-        
-        return processedContent;
+    // Simple function to highlight verse tags for display only
+    function highlightVerseTagsForDisplay(text) {
+        if (!text) return '';
+        // Highlight @Verse tags
+        let html = text.replace(/@((?:\d\s*)?[\w\s']+)\s*(\d+)\s*:\s*(\d+)(?:\s*[-–]\s*(\d+))?/g,
+            match => `<span class="verse-tag-syntax">${match}</span>`);
+        // Render newlines as <br>
+        html = html.replace(/\n/g, '<br>');
+        return html;
     }
     
-    // Function to render verse references
+    // Function to render verse references (unchanged)
     function renderVerseReferences(verseTags, container) {
         // Group verses by book and chapter
         const versesByReference = {};
