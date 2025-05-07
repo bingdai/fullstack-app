@@ -128,13 +128,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Function to extract verse tags from content
     function extractVerseTags(content) {
-        const regex = /@((?:\d\s*)?[\w\s']+)\s*(\d+)\s*:\s*(\d+)(?:\s*[-–]\s*(\d+))?/g;
+        // Improved regex: matches @Book Chapter:Verse (optionally, ranges), even inside parentheses or after commas
+        const regex = /@?\s*([\dA-Za-z\s']+?)\s+(\d+)\s*:\s*(\d+)(?:\s*[-–]\s*(\d+))?/g;
         const tags = [];
         let match;
-
         while ((match = regex.exec(content)) !== null) {
             const [fullMatch, book, chapter, startVerse, endVerse] = match;
-
             tags.push({
                 book: book.trim(),
                 chapter: parseInt(chapter, 10),
@@ -145,7 +144,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 endOffset: match.index + fullMatch.length
             });
         }
-
         return tags;
     }
 });
