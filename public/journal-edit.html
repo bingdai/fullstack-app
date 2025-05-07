@@ -6,6 +6,37 @@
     <title>Edit Journal Entry</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/journal.css">
+<style>
+.verse-tip {
+  margin-top: 10px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  padding: 0 0 0 0;
+  font-size: 1rem;
+}
+.verse-tip summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 12px 16px;
+  color: #3b4cca;
+  outline: none;
+}
+.verse-tip[open] {
+  box-shadow: 0 2px 8px rgba(59,76,202,0.09);
+}
+.verse-tip-content {
+  padding: 8px 20px 16px 32px;
+  color: #333;
+}
+.verse-tip-content code {
+  background: #e7e9fc;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.97em;
+}
+</style>
 </head>
 <body>
     <header>
@@ -42,7 +73,18 @@
                     <div id="toolbar">
                         <button id="save-btn" type="submit" class="btn btn-primary">📖 Save Journal</button>
                     </div>
-                    <textarea id="content-editor" placeholder="Write your journal entry here... Use @Book Chapter:Verse to tag Bible verses (e.g., @John 3:16)" rows="12" style="width:100%;resize:vertical;"></textarea>
+                    <textarea id="content-editor" rows="12" style="width:100%;resize:vertical;"></textarea>
+<details class="verse-tip">
+  <summary>💡 How to tag Bible verses</summary>
+  <div class="verse-tip-content">
+    <ul>
+      <li><strong>Single verse:</strong> <code>@John 3:16</code></li>
+      <li><strong>Verse range:</strong> <code>@Psalm 23:1-3</code></li>
+      <li><strong>Abbreviations:</strong> <code>@Phil 2:13</code></li>
+    </ul>
+    <p>Your tags will be automatically processed when you save your entry.</p>
+  </div>
+</details>
                 </div>
             </div>
         </form>
