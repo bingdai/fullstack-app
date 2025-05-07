@@ -1,5 +1,90 @@
 /* Journal system styles */
 
+/* Redesigned header and layout */
+.journal-app-header {
+  background: #fff;
+  border-bottom: 1px solid #e6e7ef;
+  box-shadow: 0 2px 8px rgba(59,76,202,0.03);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 0;
+}
+
+.journal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  min-height: 60px;
+}
+
+.app-name {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #3b4cca;
+  letter-spacing: 0.02em;
+  margin-right: 32px;
+}
+
+.journal-nav ul {
+  display: flex;
+  gap: 18px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.journal-nav a {
+  color: #555;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+.journal-nav a:hover {
+  color: #3b4cca;
+}
+
+.journal-main {
+  max-width: 660px;
+  margin: 38px auto 0 auto;
+  padding: 0 16px 48px 16px;
+}
+
+.journal-entry-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.journal-entry-header .back-link {
+  font-size: 1rem;
+  color: #3b4cca;
+  font-weight: 500;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 0;
+  transition: color 0.2s;
+}
+.journal-entry-header .back-link:hover {
+  color: #222;
+}
+
+#page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  color: #23294b;
+  letter-spacing: 0.01em;
+  flex: 1;
+}
+
 /* General layout */
 .container {
     max-width: 1200px;
