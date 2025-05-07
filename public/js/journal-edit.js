@@ -7,32 +7,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const contentEditor = document.getElementById('content-editor');
     const pageTitle = document.getElementById('page-title');
 
-    // Utility: Convert HTML to plain text (preserve paragraphs as newlines)
-    function htmlToPlainText(html) {
-        html = html.replace(/<br\s*\/?>/gi, '\n');
-        html = html.replace(/<\/p>/gi, '\n');
-        html = html.replace(/<p[^>]*>/gi, '');
-        html = html.replace(/<span[^>]*class=["']verse-tag-syntax["'][^>]*>(.*?)<\/span>/g, '$1'); // flatten highlight
-        html = html.replace(/<[^>]+>/g, '');
-        // Convert HTML entities
-        const temp = document.createElement('div');
-        temp.innerHTML = html;
-        return temp.textContent || temp.innerText || '';
-    }
-
-    // Sanitize all pastes to plain text
-    contentEditor.addEventListener('paste', function(e) {
-        e.preventDefault();
-        let text = (e.clipboardData || window.clipboardData).getData('text/plain');
-        document.execCommand('insertText', false, text);
-    });
+    // (No need for HTML sanitization or paste handlers with textarea)
 
     // Guarantee clean content on every input (no HTML except verse tags)
     contentEditor.addEventListener('input', () => {
-        let plain = htmlToPlainText(contentEditor.innerHTML);
-        if (contentEditor.innerText !== plain) {
-            contentEditor.innerText = plain;
-        }
         highlightVerseTags();
     });
 
@@ -58,8 +36,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // Populate form with entry data, sanitize to plain text
             titleInput.value = entry.title || '';
-            let cleanContent = htmlToPlainText(entry.content || '');
-            contentEditor.innerText = cleanContent;
+            // For textarea, just set value
+            contentEditor.value = entry.content || '';
             highlightVerseTags();
 
         } catch (error) {
@@ -74,9 +52,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const title = titleInput.value.trim();
         // Always sanitize to plain text before saving
-        let content = htmlToPlainText(contentEditor.innerHTML || '');
+        let content = contentEditor.value || '';
 
-        if (!content) {
+        if (!content.trim()) {
             alert('Please enter some content for your journal entry.');
             return;
         }
@@ -118,12 +96,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
+    contentEditor.addEventListener('input', () => {
+        highlightVerseTags();
+    });
+
     // Function to highlight verse tags in the editor (for display only)
     function highlightVerseTags() {
-        // Only for display: replace @verse with a styled span in the view, not in the DB
-        let text = contentEditor.innerText;
-        // Remove any existing HTML (shouldn't be any, but just in case)
-        contentEditor.innerHTML = text.replace(/@((?:\d\s*)?[\w\s']+)\s*(\d+)\s*:\s*(\d+)(?:\s*[-–]\s*(\d+))?/g, match => `<span class="verse-tag-syntax">${match}</span>`).replace(/\n/g, '<br>');
+        // Only for display: show a highlighted preview below the textarea
+        const previewEl = document.getElementById('content-preview');
+        if (!previewEl) return;
+        let text = contentEditor.value;
+        previewEl.innerHTML = text.replace(/@((?:\d\s*)?[\w\s']+)\s*(\d+)\s*:\s*(\d+)(?:\s*[-–]\s*(\d+))?/g, match => `<span class="verse-tag-syntax">${match}</span>`).replace(/\n/g, '<br>');
     }
 
     // Function to extract verse tags from content
