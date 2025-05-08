@@ -166,9 +166,9 @@ a:hover {
 .major-prophets  { background: #C8E6C9; }
 .minor-prophets  { background: #BBDEFB; }
 .gospels         { background: #E1BEE7; }
-.pauline         { background: #f7d6d6; }
-.general-letters { background: #C8E6C9; }
 .acts            { background: #FFD6E0; }
+.pauline         { background: #f7f2d6; }
+.general-letters { background: #C8E6C9; }
 .revelation      { background: #BBDEFB; }
 
 /* Color classes for book types */
