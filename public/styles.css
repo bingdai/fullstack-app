@@ -161,12 +161,14 @@ a:hover {
   transform: scale(1.04);
 }
 .pentateuch      { background: #FFC0CB; }
-.historical      { background: #FFE0B2; }
+.historical      { background: #FFE0B2 !important; }
+.history         { background: #FFE0B2 !important; }
 .wisdom          { background: #FFF9C4; }
 .major-prophets  { background: #C8E6C9; }
 .minor-prophets  { background: #BBDEFB; }
 .gospels         { background: #E1BEE7; }
-.pauline         { background: #F5F5F5; }
+.pauline         { background: #f7d6d6; }
+.paul-letters    { background: #f7d6d6; }
 .general-letters { background: #C8E6C9; }
 .revelation      { background: #BBDEFB; }
 
