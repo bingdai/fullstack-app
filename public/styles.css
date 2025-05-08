@@ -160,12 +160,11 @@ a:hover {
   background: #ececec;
   transform: scale(1.04);
 }
-
-.pentateuch      { background: #FFF9C4; }
-.historical      { background: #BBDEFB; }
-.wisdom          { background: #FFE0B2; }
+.pentateuch      { background: #FFC0CB; }
+.historical      { background: #FFE0B2; }
+.wisdom          { background: #FFF9C4; }
 .major-prophets  { background: #C8E6C9; }
-.minor-prophets  { background: #F8BBD0; }
+.minor-prophets  { background: #BBDEFB; }
 .gospels         { background: #E1BEE7; }
 .pauline         { background: #F5F5F5; }
 .general-letters { background: #C8E6C9; }
