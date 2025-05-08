@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         newTestament: {
             gospels: ['Matt', 'Mark', 'Luke', 'John'],
             acts: ['Acts'],
-            paulLetters: ['Rom', '1Cor', '2Cor', 'Gal', 'Eph', 'Phil', 'Col', '1Thess', '2Thess', '1Tim', '2Tim', 'Titus', 'Philem'],
+            pauline: ['Rom', '1Cor', '2Cor', 'Gal', 'Eph', 'Phil', 'Col', '1Thess', '2Thess', '1Tim', '2Tim', 'Titus', 'Philem'],
             generalLetters: ['Heb', 'Jas', '1Pet', '2Pet', '1John', '2John', '3John', 'Jude'],
             revelation: ['Rev']
         }
