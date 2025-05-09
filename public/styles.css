@@ -208,6 +208,18 @@ a:hover {
   box-shadow: none;
 }
 
+.feature-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.learning-snippets-button {
+    background-color: #4CAF50;
+    color: white;
+}
+
 /* Loading and Error States */
 .loading {
   color: var(--text-light);
